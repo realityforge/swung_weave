@@ -97,6 +97,7 @@ class SwClassAdapter
           int index = 0;
           if( ( access & Opcodes.ACC_STATIC ) == 0 )
           {
+            paramDesc.append( 'L' );
             paramDesc.append( m_classname );
             paramDesc.append( ';' );
             mv.visitVarInsn( Opcodes.AALOAD, index );
