@@ -1,0 +1,4 @@
+= swung-weave
+
+A simple project that processes bytecode transforming methods annotated with the
+annotation @RunInEDT and @RunOutsideEDT
