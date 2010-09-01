@@ -1,0 +1,5 @@
+/target
+/reports
+/*.iws
+/*.ipr
+/*.iml
