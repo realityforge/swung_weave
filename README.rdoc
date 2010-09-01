@@ -2,3 +2,16 @@
 
 A simple project that processes bytecode transforming methods annotated with the
 annotation @RunInEDT and @RunOutsideEDT
+
+
+A method annotated with @RunInEDT may be transformed into something like
+
+void method() {
+   if (!SwingUtilities.isEventDispatchThread()) {
+      SwingUtilities.invokeAndWait(new Runnable() { public void run()
+{ method(); } );
+      return;
+   }
+
+   // do method code here, guaranteed to be in EDT
+}
