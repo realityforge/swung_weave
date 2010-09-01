@@ -1,7 +1,11 @@
 package org.realityforge.swung_weave.tool;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.SwingUtilities;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -43,17 +47,33 @@ public class Main
     final String n = Main.class.getName();
     final ClassWriter cw = new ClassWriter( ClassWriter.COMPUTE_MAXS );
     final ClassReader cr = new ClassReader( n );
-    cr.accept( new SwClassAdapter( cw ), 0 );
+    final SwClassAdapter adapter = new SwClassAdapter( cw );
+    cr.accept( adapter, 0 );
+
+    final HashMap<String, byte[]> classData = new HashMap<String, byte[]>();
+    classData.putAll( adapter.getClassData() );
+    classData.put( n, cw.toByteArray() );
+
+    for( final Map.Entry<String, byte[]> entry : classData.entrySet() )
+    {
+      final String baseDir = "/home/peter/Code/swung-weave/target/sw/";
+      final File file = new File( baseDir + entry.getKey().replace('.','/' )+ ".class");
+      file.getParentFile().mkdirs();
+
+      final FileOutputStream fos = new FileOutputStream( file );
+      fos.write( entry.getValue() );
+      fos.close();
+    }
 
     final Class c = new ClassLoader()
     {
       public Class loadClass( final String name )
         throws ClassNotFoundException
       {
-        if( name.equals( n ) )
+        final byte[] data = classData.get( name );
+        if( null != data )
         {
-          byte[] b = cw.toByteArray();
-          return defineClass( name, b, 0, b.length );
+          return defineClass( name, data, 0, data.length );
         }
         return super.loadClass( name );
       }
