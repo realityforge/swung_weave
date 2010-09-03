@@ -42,7 +42,7 @@ final class ConditionalEventPump
         {
           final ClassLoader loader = ClassLoader.getSystemClassLoader();
           conditionalClazz[ 0 ] = loader.loadClass( "java.awt.Conditional" );
-          final Class dispatchThreadClass = loader.loadClass( "java.awt.EventDispatchThread" );
+          final Class<?> dispatchThreadClass = loader.loadClass( "java.awt.EventDispatchThread" );
           pumpEventsMethod[ 0 ] = dispatchThreadClass.getDeclaredMethod( "pumpEvents", conditionalClazz[ 0 ] );
           pumpEventsMethod[ 0 ].setAccessible( true );
           return null;
@@ -63,7 +63,7 @@ final class ConditionalEventPump
     {
       // Invoke java.awt.EventDispatchThread.pumpEvents(new Conditional(task));
       final Object conditional =
-        Proxy.newProxyInstance( CONDITIONAL_CLASS.getClassLoader(), new Class[]{ CONDITIONAL_CLASS },
+        Proxy.newProxyInstance( CONDITIONAL_CLASS.getClassLoader(), new Class<?>[]{ CONDITIONAL_CLASS },
                                 new Conditional( task ) );
       PUMP_EVENTS_METHOD.invoke( Thread.currentThread(), conditional );
     }
@@ -146,11 +146,14 @@ final class ConditionalEventPump
     public Object invoke( final Object proxy, final Method method, final Object[] args )
       throws Throwable
     {
-      if ( method.getDeclaringClass() != Object.class )
+      if( method.getDeclaringClass() != Object.class )
       {
         return null != waitForEvent( m_task );
       }
-      return method.invoke( this, args );
+      else
+      {
+        return method.invoke( this, args );
+      }
     }
   }
 }
