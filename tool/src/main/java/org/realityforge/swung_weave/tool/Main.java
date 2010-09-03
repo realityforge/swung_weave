@@ -15,6 +15,7 @@ public class Main
   public static void main( final String[] args ) throws Exception
   {
     new Main().main();
+    System.exit( 0 );
   }
 
   public void main() throws Exception
