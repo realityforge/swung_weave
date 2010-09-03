@@ -8,7 +8,7 @@ import java.util.concurrent.FutureTask;
 public class DispatchUtil
 {
   public static <V> V invokeAndWait( final Callable<V> function )
-    throws Throwable
+    throws Exception
   {
     if( EventQueue.isDispatchThread() )
     {
@@ -22,7 +22,19 @@ public class DispatchUtil
     }
     catch( final ExecutionException e )
     {
-      throw e.getCause();
+      final Throwable cause = e.getCause();
+      if( cause instanceof RuntimeException )
+      {
+        throw (RuntimeException)cause;
+      }
+      else if( cause instanceof Error )
+      {
+        throw (Error)cause;
+      }      
+      else //if( cause instanceof Exception )
+      {
+        throw (Exception)cause;
+      }
     }
     catch( final InterruptedException ie )
     {
