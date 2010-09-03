@@ -7,12 +7,12 @@ import java.util.concurrent.FutureTask;
 
 public class DispatchUtil
 {
-  public static <V> V invokeAndWait( final Callable<V> function )
+  public static <V> V invokeInEDT( final Callable<V> function )
     throws Exception
   {
     if( EventQueue.isDispatchThread() )
     {
-      throw new IllegalStateException( "Should not be calling invokeAndWait from EDT" );
+      throw new IllegalStateException( "Should not be calling invokeInEDT from EDT" );
     }
     try
     {
@@ -40,5 +40,15 @@ public class DispatchUtil
     {
       throw new RuntimeException( ie );
     }
+  }
+
+  public static <V> V invokeOutsideEDT( final Callable<V> function )
+    throws Exception
+  {
+    if( !EventQueue.isDispatchThread() )
+    {
+      throw new IllegalStateException( "Should not be calling invokeOutsideEDT from EDT" );
+    }
+    throw new IllegalStateException( "Not implemented yet!" );
   }
 }
