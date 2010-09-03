@@ -23,7 +23,6 @@ import java.util.concurrent.Future;
  * This implementation of EventPump calls the package protected method
  * <tt>java.awt.EventDispatchThread.pumpEvents(Conditional)</tt>
  * to pump events while a Task is executed.
- *
  */
 final class ConditionalEventPump
 {
@@ -93,7 +92,7 @@ final class ConditionalEventPump
   private static boolean pumpEvent( final Future<?> task )
   {
     // Task already completed, return false to indicate to stop pumping events
-    if ( task.isDone() )
+    if ( task.isDone() || task.isCancelled() )
     {
       return false;
     }
