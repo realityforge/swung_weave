@@ -9,61 +9,9 @@ import java.util.Map;
 import javax.swing.SwingUtilities;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
-import org.realityforge.swung_weave.DisallowsEDT;
-import org.realityforge.swung_weave.RequiresEDT;
-import org.realityforge.swung_weave.RunInEDT;
-import org.realityforge.swung_weave.RunOutsideEDT;
 
 public class Main
 {
-  @RequiresEDT
-  public static void methodRequiresEDT()
-  {
-    System.out.println( "methodRequiresEDT()" );
-  }
-
-  @DisallowsEDT
-  public static void methodDisallowsEDT()
-  {
-    System.out.println( "methodDisallowsEDT()" );
-  }
-
-  @RunInEDT
-  public static void methodRunInEDT()
-  {
-    System.out.println( "methodRunInEDT()" );
-  }
-
-  @RunOutsideEDT
-  public static void methodRunOutsideEDT()
-  {
-    System.out.println( "methodRunOutsideEDT()" );
-  }
-
-  @RequiresEDT
-  public void instanceMethodRequiresEDT()
-  {
-    System.out.println( "methodRequiresEDT()" );
-  }
-
-  @DisallowsEDT
-  public void instanceMethodDisallowsEDT()
-  {
-    System.out.println( "methodDisallowsEDT()" );
-  }
-
-  @RunInEDT
-  public void instanceMethodRunInEDT()
-  {
-    System.out.println( "methodRunInEDT()" );
-  }
-
-  @RunOutsideEDT
-  public void instanceMethodRunOutsideEDT()
-  {
-    System.out.println( "methodRunOutsideEDT()" );
-  }
-
   public static void main( final String[] args ) throws Exception
   {
     new Main().main();
@@ -71,21 +19,22 @@ public class Main
 
   public void main() throws Exception
   {
-    runMethods( "Pre transform outside EDT", Main.class );
+    final Class<?> clazz = Dummy.class;
+    runMethods( "Pre transform outside EDT", clazz );
 
-    final String n = Main.class.getName();
+    final String classname = clazz.getName();
     final ClassWriter cw = new ClassWriter( ClassWriter.COMPUTE_MAXS );
-    final ClassReader cr = new ClassReader( n );
+    final ClassReader cr = new ClassReader( classname );
     final SwClassAdapter adapter = new SwClassAdapter( cw );
     cr.accept( adapter, 0 );
 
     final HashMap<String, byte[]> classData = new HashMap<String, byte[]>();
     classData.putAll( adapter.getClassData() );
-    classData.put( n, cw.toByteArray() );
+    classData.put( classname, cw.toByteArray() );
 
     for( final Map.Entry<String, byte[]> entry : classData.entrySet() )
     {
-      final String baseDir = "/home/peter/Code/swung-weave/target/sw/";
+      final String baseDir = "/dev/external/swung_weave/target/sw/";
       final File file = new File( baseDir + entry.getKey().replace( '.', '/' ) + ".class" );
       file.getParentFile().mkdirs();
 
@@ -106,7 +55,7 @@ public class Main
         }
         return super.loadClass( name );
       }
-    }.loadClass( n );
+    }.loadClass( classname );
 
     runMethods( "Post transform outside EDT", c );
 
@@ -115,13 +64,15 @@ public class Main
       @Override
       public void run()
       {
-        runMethods( "Post transform in EDT", c );
+        runMethods( "Post transform in EDT", c  );
       }
     } );
   }
 
   private void runMethods( final String context, final Class<?> clazz )
   {
+    final Object instance = createInstance( clazz );
+
     System.out.println();
     System.out.println();
     System.out.println( "----------------------" );
@@ -131,10 +82,26 @@ public class Main
     doStaticMethod( clazz, "methodDisallowsEDT" );
     doStaticMethod( clazz, "methodRunInEDT" );
     doStaticMethod( clazz, "methodRunOutsideEDT" );
-    doInstanceMethod( clazz, this, "instanceMethodRequiresEDT" );
-    doInstanceMethod( clazz, this, "instanceMethodDisallowsEDT" );
-    doInstanceMethod( clazz, this, "instanceMethodRunInEDT" );
-    doInstanceMethod( clazz, this, "instanceMethodRunOutsideEDT" );
+    doInstanceMethod( clazz, instance, "instanceMethodRequiresEDT" );
+    doInstanceMethod( clazz, instance, "instanceMethodDisallowsEDT" );
+    doInstanceMethod( clazz, instance, "instanceMethodRunInEDT" );
+    doInstanceMethod( clazz, instance, "instanceMethodRunOutsideEDT" );
+  }
+
+  private Object createInstance( final Class<?> clazz )
+  {
+    try
+    {
+      return clazz.newInstance();
+    }
+    catch ( InstantiationException e )
+    {
+      throw new IllegalStateException( e );
+    }
+    catch ( IllegalAccessException e )
+    {
+      throw new IllegalStateException( e );
+    }
   }
 
   public void doInstanceMethod( final Class<?> clazz,
