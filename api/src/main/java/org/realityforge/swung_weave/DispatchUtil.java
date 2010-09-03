@@ -3,14 +3,19 @@ package org.realityforge.swung_weave;
 import java.awt.EventQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 
 public class DispatchUtil
 {
+  private static final ExecutorService c_executorService = Executors.newCachedThreadPool();
+
   public static <V> V invokeInEDT( final Callable<V> function )
     throws Exception
   {
-    if( EventQueue.isDispatchThread() )
+    if ( EventQueue.isDispatchThread() )
     {
       throw new IllegalStateException( "Should not be calling invokeInEDT from EDT" );
     }
@@ -20,23 +25,23 @@ public class DispatchUtil
       EventQueue.invokeLater( task );
       return task.get();
     }
-    catch( final ExecutionException e )
+    catch ( final ExecutionException e )
     {
       final Throwable cause = e.getCause();
-      if( cause instanceof RuntimeException )
+      if ( cause instanceof RuntimeException )
       {
-        throw (RuntimeException)cause;
+        throw (RuntimeException) cause;
       }
-      else if( cause instanceof Error )
+      else if ( cause instanceof Error )
       {
-        throw (Error)cause;
-      }      
+        throw (Error) cause;
+      }
       else //if( cause instanceof Exception )
       {
-        throw (Exception)cause;
+        throw (Exception) cause;
       }
     }
-    catch( final InterruptedException ie )
+    catch ( final InterruptedException ie )
     {
       throw new RuntimeException( ie );
     }
@@ -45,10 +50,35 @@ public class DispatchUtil
   public static <V> V invokeOutsideEDT( final Callable<V> function )
     throws Exception
   {
-    if( !EventQueue.isDispatchThread() )
+    if ( !EventQueue.isDispatchThread() )
     {
       throw new IllegalStateException( "Should not be calling invokeOutsideEDT from EDT" );
     }
-    throw new IllegalStateException( "Not implemented yet!" );
+    try
+    {
+      final Future<V> task = c_executorService.submit( function );
+      ConditionalEventPump.pumpEvents( task );
+      return task.get();
+    }
+    catch ( final ExecutionException e )
+    {
+      final Throwable cause = e.getCause();
+      if ( cause instanceof RuntimeException )
+      {
+        throw (RuntimeException) cause;
+      }
+      else if ( cause instanceof Error )
+      {
+        throw (Error) cause;
+      }
+      else //if( cause instanceof Exception )
+      {
+        throw (Exception) cause;
+      }
+    }
+    catch ( final InterruptedException ie )
+    {
+      throw new RuntimeException( ie );
+    }
   }
 }
