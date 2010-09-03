@@ -1,5 +1,5 @@
 gem 'buildr-bnd', :version => '0.0.5'
-gem 'buildr-iidea', :version => '0.0.7'
+gem 'buildr-iidea', :version => '0.0.8'
 
 VERSION_NUMBER = "1.0.0"
 GROUP = "org.realityforge"
@@ -13,7 +13,10 @@ repositories.remote << 'http://repository.code-house.org/content/repositories/re
 
 repositories.remote << Buildr::Bnd.remote_repository
 
-ASM = 'asm:asm-all:jar:3.0'
+ASM = 'asm:asm-all:jar:3.3'
+                                               
+artifact('asm:asm-all:jar:3.3').from(File.dirname(__FILE__) + "/repository/asm/asm-all/3.3/asm-all-3.3.jar")
+artifact('asm:asm-all:jar:sources:3.3').from(File.dirname(__FILE__) + "/repository/asm/asm-all/3.3/asm-all-3.3-sources.jar")
 
 class CentralLayout < Layout::Default
   def initialize(key, top_level, use_subdir)
