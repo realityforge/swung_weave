@@ -11,7 +11,7 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
-class SwClassAdapter
+final class SwClassAdapter
   extends ClassAdapter
 {
   private String m_classname;
@@ -96,20 +96,20 @@ class SwClassAdapter
 
         if( requiresEDT )
         {
-          GenUtil.genIsDispatchThreadInvoke( mv );
+          genIsDispatchThreadInvoke( mv );
           final Label end = new Label();
           mv.visitJumpInsn( Opcodes.IFNE, end );
-          GenUtil.genIllegalStateException( mv,
+          genIllegalStateException( mv,
                                             "Method " + methodName + ";" + desc + " must only be " +
                                             "invoked in the Event Dispatch Thread." );
           mv.visitLabel( end );
         }
         if( disallowsEDT )
         {
-          GenUtil.genIsDispatchThreadInvoke( mv );
+          genIsDispatchThreadInvoke( mv );
           final Label end = new Label();
           mv.visitJumpInsn( Opcodes.IFEQ, end );
-          GenUtil.genIllegalStateException( mv,
+          genIllegalStateException( mv,
                                             "Method " + methodName + ";" + desc + " must not be " +
                                             "invoked in the Event Dispatch Thread." );
           mv.visitLabel( end );
@@ -118,7 +118,7 @@ class SwClassAdapter
 
       private void genTransfer( final boolean toEDT )
       {
-        GenUtil.genIsDispatchThreadInvoke( mv );
+        genIsDispatchThreadInvoke( mv );
         final Label end = new Label();
         mv.visitJumpInsn( toEDT ? Opcodes.IFNE : Opcodes.IFEQ, end );
         m_adapterCount += 1;
@@ -137,7 +137,7 @@ class SwClassAdapter
         }
         for( final Type type : methodParameterTypes )
         {
-          mv.visitVarInsn( GenUtil.loadOpcode( type.getSort() ), index );
+          mv.visitVarInsn( loadOpcode( type.getSort() ), index );
           index += 1;
           paramDesc.append( type.getDescriptor() );
           paramDesc.append( ';' );
@@ -148,7 +148,7 @@ class SwClassAdapter
                             "org/realityforge/swung_weave/DispatchUtil",
                             toEDT ? "invokeInEDT" : "invokeOutsideEDT",
                             "(Ljava/util/concurrent/Callable;)Ljava/lang/Object;" );
-        GenUtil.genReturn( mv, returnType );
+        genReturn( mv, returnType );
         mv.visitLabel( end );
 
         final ClassWriter cw = new ClassWriter( ClassWriter.COMPUTE_MAXS );
@@ -198,7 +198,7 @@ class SwClassAdapter
           // the this object
           ctor.visitVarInsn( Opcodes.ALOAD, 0 );
           //the parameter to put in field
-          ctor.visitVarInsn( GenUtil.loadOpcode( type.getSort() ), 1 + parameterID );
+          ctor.visitVarInsn( loadOpcode( type.getSort() ), 1 + parameterID );
           ctor.visitFieldInsn( Opcodes.PUTFIELD,
                                helperClass,
                                "p" + parameterID,
@@ -229,5 +229,90 @@ class SwClassAdapter
         m_adapters.put( helperClass.replace( '/', '.' ), cw.toByteArray() );
       }
     };
+  }
+
+  static void genIsDispatchThreadInvoke( final MethodVisitor mv )
+  {
+    mv.visitMethodInsn( Opcodes.INVOKESTATIC,
+                        "java/awt/EventQueue",
+                        "isDispatchThread",
+                        "()Z" );
+  }
+
+  static void genIllegalStateException( final MethodVisitor mv,
+                                                final String message )
+  {
+    final String exception = "java/lang/IllegalStateException";
+    mv.visitTypeInsn( Opcodes.NEW, exception );
+    mv.visitInsn( Opcodes.DUP );
+    mv.visitLdcInsn( message );
+    mv.visitMethodInsn( Opcodes.INVOKESPECIAL, exception, "<init>", "(Ljava/lang/String;)V" );
+    mv.visitInsn( Opcodes.ATHROW );
+    mv.visitInsn( Opcodes.RETURN );
+  }
+
+  static void genReturn( final MethodVisitor mv,
+                                 final Type returnType )
+  {
+    final int sort = returnType.getSort();
+    if( Type.VOID == sort )
+    {
+      mv.visitInsn( Opcodes.POP );
+      mv.visitInsn( Opcodes.RETURN );
+    }
+    else if( Type.BOOLEAN == sort ||
+             Type.BYTE == sort ||
+             Type.CHAR == sort ||
+             Type.SHORT == sort ||
+             Type.INT == sort )
+    {
+      mv.visitInsn( Opcodes.IRETURN );
+    }
+    else if( Type.LONG == sort )
+    {
+      mv.visitInsn( Opcodes.LRETURN );
+    }
+    else if( Type.FLOAT == sort )
+    {
+      mv.visitInsn( Opcodes.FRETURN );
+    }
+    else if( Type.DOUBLE == sort )
+    {
+      mv.visitInsn( Opcodes.DRETURN );
+    }
+    else //OBJECT and arrays
+    {
+      mv.visitInsn( Opcodes.ARETURN );
+    }
+  }
+
+  static int loadOpcode( final int sort )
+  {
+    final int opcode;
+    if( Type.BOOLEAN == sort ||
+        Type.BYTE == sort ||
+        Type.CHAR == sort ||
+        Type.SHORT == sort ||
+        Type.INT == sort )
+    {
+      opcode = Opcodes.ILOAD;
+    }
+    else if( Type.LONG == sort )
+    {
+      opcode = Opcodes.LLOAD;
+    }
+    else if( Type.FLOAT == sort )
+    {
+      opcode = Opcodes.FLOAD;
+    }
+    else if( Type.DOUBLE == sort )
+    {
+      opcode = Opcodes.DLOAD;
+    }
+    else //OBJECT and arrays
+    {
+      opcode = Opcodes.ALOAD;
+    }
+    return opcode;
   }
 }
