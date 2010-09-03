@@ -100,7 +100,7 @@ class SwClassAdapter
             paramDesc.append( 'L' );
             paramDesc.append( m_classname );
             paramDesc.append( ';' );
-            mv.visitVarInsn( Opcodes.AALOAD, index );
+            mv.visitVarInsn( Opcodes.ALOAD, index );
             index += 1;
           }
           for( final Type type : methodParameterTypes )
