@@ -41,10 +41,10 @@ final class ConditionalEventPump
           throws ClassNotFoundException, NoSuchMethodException
         {
           final ClassLoader loader = ClassLoader.getSystemClassLoader();
-          conditionalClazz[0] = loader.loadClass( "java.awt.Conditional" );
+          conditionalClazz[ 0 ] = loader.loadClass( "java.awt.Conditional" );
           final Class dispatchThreadClass = loader.loadClass( "java.awt.EventDispatchThread" );
-          pumpEventsMethod[0] = dispatchThreadClass.getDeclaredMethod( "pumpEvents", conditionalClazz[0] );
-          pumpEventsMethod[0].setAccessible( true );
+          pumpEventsMethod[ 0 ] = dispatchThreadClass.getDeclaredMethod( "pumpEvents", conditionalClazz[ 0 ] );
+          pumpEventsMethod[ 0 ].setAccessible( true );
           return null;
         }
       } );
@@ -53,8 +53,8 @@ final class ConditionalEventPump
     {
       throw new Error( e.toString() );
     }
-    CONDITIONAL_CLASS = conditionalClazz[0];
-    PUMP_EVENTS_METHOD = pumpEventsMethod[0];
+    CONDITIONAL_CLASS = conditionalClazz[ 0 ];
+    PUMP_EVENTS_METHOD = pumpEventsMethod[ 0 ];
   }
 
   static void pumpEvents( final Future<?> task )
@@ -83,39 +83,6 @@ final class ConditionalEventPump
     }
   }
 
-  /**
-   * This method is called before an event is got from the EventQueue and dispatched,
-   * to see if pumping of events should continue or not.
-   * Returns true to indicate that pumping should continue, false to indicate that pumping
-   * should stop.
-   */
-  private static boolean pumpEvent( final Future<?> task )
-  {
-    // Task already completed, return false to indicate to stop pumping events
-    if ( task.isDone() || task.isCancelled() )
-    {
-      return false;
-    }
-
-    while ( true )
-    {
-      // The task is still running, we should pump events
-      AWTEvent nextEvent = waitForEvent();
-      if ( nextEvent == null )
-      {
-        return false;
-      }
-
-      // The event has been filtered out, pop it from the EventQueue
-      // then wait again for the next event
-      nextEvent = getNextEvent();
-      if ( nextEvent == null )
-      {
-        return false;
-      }
-    }
-  }
-
   private static EventQueue getEventQueue()
   {
     return AccessController.doPrivileged( new PrivilegedAction<EventQueue>()
@@ -127,19 +94,6 @@ final class ConditionalEventPump
     } );
   }
 
-  private static AWTEvent getNextEvent()
-  {
-    try
-    {
-      return getEventQueue().getNextEvent();
-    }
-    catch ( final InterruptedException ie )
-    {
-      Thread.currentThread().interrupt();
-      return null;
-    }
-  }
-
   /**
    * Waits until an event is available on the EventQueue.
    * This method uses the same synchronization mechanisms used by EventQueue to be notified when
@@ -147,19 +101,19 @@ final class ConditionalEventPump
    * Waiting for events is necessary in this case: a Task is posted and we would like to start
    * pumping, but no events have been posted yet.
    */
-  private static AWTEvent waitForEvent()
+  private static AWTEvent waitForEvent( final Future<?> task )
   {
-    EventQueue queue = getEventQueue();
-    AWTEvent nextEvent;
+    final EventQueue queue = getEventQueue();
+    AWTEvent nextEvent = null;
     synchronized ( queue )
     {
-      while ( ( nextEvent = queue.peekEvent() ) == null )
+      while ( !task.isDone() && !task.isCancelled() && null == ( nextEvent = queue.peekEvent() ) )
       {
         try
         {
-          queue.wait();
+          queue.wait( 100 );
         }
-        catch ( InterruptedException x )
+        catch ( final InterruptedException ie )
         {
           Thread.currentThread().interrupt();
           return null;
@@ -189,12 +143,12 @@ final class ConditionalEventPump
     /**
      * Implements method <tt>java.awt.Conditional.evaluate()</tt>
      */
-    public Object invoke( Object proxy, Method method, Object[] args )
+    public Object invoke( final Object proxy, final Method method, final Object[] args )
       throws Throwable
     {
       if ( method.getDeclaringClass() != Object.class )
       {
-        return pumpEvent( m_task );
+        return null != waitForEvent( m_task );
       }
       return method.invoke( this, args );
     }
