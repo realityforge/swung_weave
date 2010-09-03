@@ -40,6 +40,7 @@ define_with_central_layout("swung-weave", true, false) do
 
   desc "SwingWeave: API and Annotations"
   define_with_central_layout "api" do
+    test.using :testng
     package(:bundle).tap do |bnd|
       bnd['Export-Package'] = "org.realityforge.swung_weave.*;version=#{version}"
     end
@@ -48,6 +49,7 @@ define_with_central_layout("swung-weave", true, false) do
   desc "SwingWeave: Bytecode weaver tool"
   define_with_central_layout "tool" do
     compile.with ASM, projects('api')
+    test.using :testng
     package(:bundle).tap do |bnd|
       bnd['Export-Package'] = "org.realityforge.swung_weave.tool.*;version=#{version}"
       bnd['Private-Package'] = "org.objectweb.asm.*"
