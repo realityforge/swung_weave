@@ -10,11 +10,11 @@ import javax.swing.SwingUtilities;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 
-public class Main
+public class TestMain
 {
   public static void main( final String[] args ) throws Exception
   {
-    new Main().main();
+    new TestMain().main();
     System.exit( 0 );
   }
 
