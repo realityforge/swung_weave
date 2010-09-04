@@ -74,7 +74,7 @@ public class ClassToWeave
       System.out.println( "Current TestInvocation does not match expected methodType" );
       throw new IllegalStateException( "Current TestInvocation does not match expected methodType" );
     }
-    if( entry.inEDT != SwingUtilities.isEventDispatchThread() )
+    if( entry.expectedInEDT != SwingUtilities.isEventDispatchThread() )
     {
       System.out.println( "Current TestInvocation does not match expected inEDT" );
       throw new IllegalStateException( "Current TestInvocation does not match expected inEDT" );

@@ -17,7 +17,7 @@ public final class TestInvocation
   public final int methodType;
   public final boolean inEDT;
   public final Object[] parameters;
-  final boolean expectedInEDT;
+  public final boolean expectedInEDT;
   final Class<? extends Throwable> expectedExceptionType;
   final String expectedExceptionMessage;
   boolean invoked;
