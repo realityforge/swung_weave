@@ -3,7 +3,7 @@ package org.realityforge.swung_weave.tool;
 import org.testng.Assert;
 
 /**
- * Note: Many fields are public as they are accessed from within a different classloader
+ * Note: Many fields are public as they are accessed from within a different class loader
  * and if they are not public they will generate IllegalAccessError exceptions. 
  */
 public final class TestInvocation
@@ -39,7 +39,7 @@ public final class TestInvocation
                   final int methodType,
                   final boolean inEDT,
                   final Object[] parameters,
-    final boolean expectedInEDT,
+                  final boolean expectedInEDT,
                   final Class<? extends Throwable> expectedExceptionType,
                   final String expectedExceptionMessage )
   {
@@ -58,7 +58,107 @@ public final class TestInvocation
       annotation.getName().substring( "org.realityforge.swung_weave.".length() );
     final String methodTypeSuffix =
       methodType == STATIC ? "s" : methodType == INSTANCE ? "i" : "c";
-    return shortAnnotationName + "_" + methodTypeSuffix;
+    final StringBuilder sb = new StringBuilder();
+    for( final Object parameter : parameters )
+    {
+      if( sb.length() == 0 ) sb.append( '_' );
+      sb.append( encodingForType( parameter.getClass() ) );
+    }
+    return shortAnnotationName + "_" + methodTypeSuffix + sb;
+  }
+
+  Class<?>[] getParameterTypes()
+  {
+    final Class[] types = new Class[parameters.length];
+    for( int i = 0; i < parameters.length; i++ )
+    {
+      types[i] = typeOfParameter(parameters[i].getClass());
+    }
+    return types;
+  }
+
+  private Class<?> typeOfParameter( final Class<?> type )
+  {
+    if( Boolean.class == type )
+    {
+      return Boolean.TYPE;
+    }
+    else if( Byte.class == type )
+    {
+      return Byte.TYPE;
+    }
+    else if( Character.class == type )
+    {
+      return Character.TYPE;
+    }
+    else if( Short.class == type )
+    {
+      return Short.TYPE;
+    }
+    else if( Integer.class == type )
+    {
+      return Integer.TYPE;
+    }
+    else if( Long.class == type )
+    {
+      return Long.TYPE;
+    }
+    else if( Float.class == type )
+    {
+      return Float.TYPE;
+    }
+    else if( Double.class == type )
+    {
+      return Double.TYPE;
+    }
+    else
+    {
+      return type;
+    }
+  }
+
+  private String encodingForType( final Class<?> type )
+  {
+    if( Boolean.class == type || Boolean.TYPE == type )
+    {
+      return "Z";
+    }
+    else if( Byte.class == type || Byte.TYPE == type )
+    {
+      return "B";
+    }
+    else if( Character.class == type || Character.TYPE == type )
+    {
+      return "C";
+    }
+    else if( Short.class == type || Short.TYPE == type )
+    {
+      return "S";
+    }
+    else if( Integer.class == type || Integer.TYPE == type )
+    {
+      return "I";
+    }
+    else if( Long.class == type || Long.TYPE == type )
+    {
+      return "J";
+    }
+    else if( Float.class == type || Float.TYPE == type )
+    {
+      return "F";
+    }
+    else if( Double.class == type || Double.TYPE == type )
+    {
+      return "D";
+    }
+    else if( type.isArray() )
+    {
+      return "a" + encodingForType( type.getComponentType() );
+    }
+    else
+    {
+      return "A";
+    }
   }
 
   public boolean isInvoked()
@@ -79,11 +179,16 @@ public final class TestInvocation
     }
     else if( null == t )
     {
-      Assert.assertEquals( null, expectedExceptionType, "Expected exception type " + expectedExceptionType + ". Actual exception: " + t );
+      Assert.assertEquals( null,
+                           expectedExceptionType,
+                           "Expected exception type " + expectedExceptionType + ". Actual exception: " + t );
     }
     else if( null == expectedExceptionType )
     {
-      Assert.assertEquals( expectedExceptionType, t.getClass(), "Expected exception type " + expectedExceptionType + ". Actual exception: " + t );
+      t.printStackTrace();
+      Assert.assertEquals( expectedExceptionType,
+                           t.getClass(),
+                           "Expected exception type " + expectedExceptionType + ". Actual exception: " + t );
       final String message =
         ( null == expectedExceptionMessage ) ?
         "" :

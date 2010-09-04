@@ -37,7 +37,7 @@ public class SwClassAdapterTestCase
     classData.putAll( adapter.getClassData() );
     classData.put( classname, cw.toByteArray() );
 
-    if( false )
+    if( true )
     {
       for( final Map.Entry<String, byte[]> entry : classData.entrySet() )
       {
@@ -108,7 +108,7 @@ public class SwClassAdapterTestCase
     boolean completed = false;
     try
     {
-      final Method method = c_clazz.getDeclaredMethod( methodName, new Class[0] );
+      final Method method = c_clazz.getDeclaredMethod( methodName, invocation.getParameterTypes() );
       method.setAccessible( true );
       final Object instance;
       if( invocation.methodType == TestInvocation.INSTANCE )
@@ -119,7 +119,7 @@ public class SwClassAdapterTestCase
       {
         instance = null;
       }
-      method.invoke( instance );
+      method.invoke( instance, invocation.parameters );
       completed = true;
     }
     catch( final InvocationTargetException e )
@@ -141,10 +141,34 @@ public class SwClassAdapterTestCase
   {
     final ArrayList<TestInvocation> tests = new ArrayList<TestInvocation>();
 
-    final Object[] parameters = new Object[0];
+    final Object[][] parameterSets = new Object[][]
+      {
+        new Object[]{},
+        new Object[]{true},
+        new Object[]{(byte)1},
+        new Object[]{'a'},
+        new Object[]{(short)2},
+        new Object[]{3},
+        new Object[]{4L},
+        new Object[]{5F},
+        new Object[]{6D},
+        new Object[]{"Hello"},
+        new Object[]{new boolean[]{true}},
+        new Object[]{new byte[]{(byte)1}},
+        new Object[]{new char[]{'a'}},
+        new Object[]{new short[]{(short)2}},
+        new Object[]{new int[]{3}},
+        new Object[]{new long[]{4L}},
+        new Object[]{new float[]{5F}},
+        new Object[]{new double[]{6D}},
+        new Object[]{new String[]{"Hello"}},
+      };
 
-    addTestSet( tests, TestInvocation.STATIC, parameters );
-    addTestSet( tests, TestInvocation.INSTANCE, parameters );
+    for( Object[] parameters : parameterSets )
+    {
+      addTestSet( tests, TestInvocation.STATIC, parameters );
+      addTestSet( tests, TestInvocation.INSTANCE, parameters );
+    }
 
     final Object[][] results = new Object[tests.size()][];
     for( int i = 0; i < results.length; i++ )
