@@ -77,12 +77,6 @@ public class SwClassAdapterTestCase
   public void verifySwClassAdapterBehaviour( final TestInvocation invocation )
     throws Throwable
   {
-    System.out.println();
-    System.out.println();
-    System.out.println();
-    System.out.println( "=====================================" );
-    System.out.println( invocation );
-    System.out.println( "=====================================" );
     if( invocation.inEDT )
     {
       try
