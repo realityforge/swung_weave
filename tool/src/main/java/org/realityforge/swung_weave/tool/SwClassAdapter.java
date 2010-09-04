@@ -140,7 +140,6 @@ final class SwClassAdapter
           mv.visitVarInsn( loadOpcode( type.getSort() ), index );
           index += 1;
           paramDesc.append( type.getDescriptor() );
-          paramDesc.append( ';' );
         }
         final String helperConstructorDesc = "(" + paramDesc + ")V";
         mv.visitMethodInsn( Opcodes.INVOKESPECIAL, helperClass, "<init>", helperConstructorDesc );
