@@ -100,8 +100,8 @@ final class SwClassAdapter
           final Label end = new Label();
           mv.visitJumpInsn( Opcodes.IFNE, end );
           genIllegalStateException( mv,
-                                            "Method " + methodName + ";" + desc + " must only be " +
-                                            "invoked in the Event Dispatch Thread." );
+                                    "Method " + methodName + " must only be " +
+                                    "invoked in the Event Dispatch Thread." );
           mv.visitLabel( end );
         }
         if( disallowsEDT )
@@ -110,8 +110,8 @@ final class SwClassAdapter
           final Label end = new Label();
           mv.visitJumpInsn( Opcodes.IFEQ, end );
           genIllegalStateException( mv,
-                                            "Method " + methodName + ";" + desc + " must not be " +
-                                            "invoked in the Event Dispatch Thread." );
+                                    "Method " + methodName + " must not be " +
+                                    "invoked in the Event Dispatch Thread." );
           mv.visitLabel( end );
         }
       }
@@ -240,7 +240,7 @@ final class SwClassAdapter
   }
 
   static void genIllegalStateException( final MethodVisitor mv,
-                                                final String message )
+                                        final String message )
   {
     final String exception = "java/lang/IllegalStateException";
     mv.visitTypeInsn( Opcodes.NEW, exception );
@@ -252,7 +252,7 @@ final class SwClassAdapter
   }
 
   static void genReturn( final MethodVisitor mv,
-                                 final Type returnType )
+                         final Type returnType )
   {
     final int sort = returnType.getSort();
     if( Type.VOID == sort )
