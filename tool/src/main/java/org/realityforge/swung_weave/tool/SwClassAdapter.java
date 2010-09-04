@@ -158,16 +158,17 @@ final class SwClassAdapter
                   "java/lang/Object",
                   new String[]{ "java/util/concurrent/Callable" } );
 
+        int parameterID = 1;
         if( ( access & Opcodes.ACC_STATIC ) == 0 )
         {
           cw.visitField( Opcodes.ACC_PRIVATE | Opcodes.ACC_FINAL,
-                         "p0",
+                         "p1",
                          "L" + m_classname + ";",
                          null,
                          null );
+          parameterID += 1;
         }
 
-        int parameterID = 1;
         for( final Type type : methodParameterTypes )
         {
           cw.visitField( Opcodes.ACC_PRIVATE | Opcodes.ACC_FINAL,
@@ -184,20 +185,21 @@ final class SwClassAdapter
                                                    helperConstructorDesc,
                                                    null,
                                                    null );
+        parameterID = 1;
         if( ( access & Opcodes.ACC_STATIC ) == 0 )
         {
           ctor.visitVarInsn( Opcodes.ALOAD, 0 );
           ctor.visitVarInsn( Opcodes.ALOAD, 1 );
-          ctor.visitFieldInsn( Opcodes.PUTFIELD, helperClass, "p0", "L" + m_classname + ";" );
+          ctor.visitFieldInsn( Opcodes.PUTFIELD, helperClass, "p1", "L" + m_classname + ";" );
+          parameterID += 1;
         }
 
-        parameterID = 1;
         for( final Type type : methodParameterTypes )
         {
           // the this object
           ctor.visitVarInsn( Opcodes.ALOAD, 0 );
           //the parameter to put in field
-          ctor.visitVarInsn( loadOpcode( type.getSort() ), 1 + parameterID );
+          ctor.visitVarInsn( loadOpcode( type.getSort() ), parameterID );
           ctor.visitFieldInsn( Opcodes.PUTFIELD,
                                helperClass,
                                "p" + parameterID,
@@ -220,11 +222,14 @@ final class SwClassAdapter
                           null,
                           new String[]{ "java/lang/Exception" } );
 
+        parameterID = 1;
         if( ( access & Opcodes.ACC_STATIC ) == 0 )
         {
           callMethod.visitVarInsn( Opcodes.ALOAD, 0 );
-          callMethod.visitFieldInsn( Opcodes.GETFIELD, helperClass, "p0", "L" + m_classname + ";" );
+          callMethod.visitFieldInsn( Opcodes.GETFIELD, helperClass, "p1", "L" + m_classname + ";" );
+          parameterID += 1;
         }
+
         for( final Type type : methodParameterTypes )
         {
           // the this object
