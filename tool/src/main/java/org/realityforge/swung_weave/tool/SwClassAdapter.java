@@ -220,7 +220,37 @@ final class SwClassAdapter
                           "()Ljava/lang/Object;",
                           null,
                           new String[]{ "java/lang/Exception" } );
-        callMethod.visitInsn( Opcodes.ACONST_NULL );
+
+        if( ( access & Opcodes.ACC_STATIC ) == 0 )
+        {
+          callMethod.visitVarInsn( Opcodes.ALOAD, 0 );
+          callMethod.visitFieldInsn( Opcodes.GETFIELD, helperClass, "p0", "L" + m_classname + ";" );
+        }
+        for( final Type type : methodParameterTypes )
+        {
+          // the this object
+          callMethod.visitVarInsn( Opcodes.ALOAD, 0 );
+          callMethod.visitFieldInsn( Opcodes.GETFIELD,
+                               helperClass,
+                               "p" + parameterID,
+                               type.getDescriptor() );
+
+          parameterID += 1;
+        }
+        final int invokeOpcode;
+        if( ( access & Opcodes.ACC_STATIC ) == 0 )
+        {
+          invokeOpcode = Opcodes.INVOKEVIRTUAL;
+        }
+        else
+        {
+          invokeOpcode = Opcodes.INVOKESTATIC;
+        }
+        callMethod.visitMethodInsn( invokeOpcode, m_classname, methodName, desc );
+        if( Type.VOID == returnType.getSort() )
+        {
+          callMethod.visitInsn( Opcodes.ACONST_NULL );
+        }
         callMethod.visitInsn( Opcodes.ARETURN );
         // max stack and max locals automatically computed
         callMethod.visitMaxs( 0, 0 );
