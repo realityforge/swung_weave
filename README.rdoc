@@ -22,3 +22,5 @@ A method annotated with @RunInEDT may be transformed into something like
 * Add tests out the whazoo for different combinations of static/instance/constructor
   methods and 0 or parameters of every type (including array versions)
 * Add automatable tests for DispatchUtil 
+* Remove annotations after processing.
+* Don't try to write processed .class file if no annotations present
