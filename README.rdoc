@@ -13,3 +13,12 @@ A method annotated with @RunInEDT may be transformed into something like
 
      // do method code here, guaranteed to be in EDT
   }
+
+== TODO
+
+* Fail to process class if annotation on a constructor
+* Process a jar and create a new jar with annotated files. Or process dir and
+  transform files in place
+* Add tests out the whazoo for different combinations of static/instance/constructor
+  methods and 0 or parameters of every type (including array versions)
+* Add automatable tests for DispatchUtil 
