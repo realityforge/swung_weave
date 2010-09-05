@@ -122,7 +122,8 @@ final class SwClassAdapter
         final Label end = new Label();
         mv.visitJumpInsn( toEDT ? Opcodes.IFNE : Opcodes.IFEQ, end );
         m_adapterCount += 1;
-        final String helperClass = m_classname + "$Sw_" + methodName + "_" + m_adapterCount;
+        final String helperClass =
+          m_classname + "$Sw_" + methodName + "_" + m_adapterCount;
         mv.visitTypeInsn( Opcodes.NEW, helperClass );
         mv.visitInsn( Opcodes.DUP );
         final StringBuilder paramDesc = new StringBuilder();
@@ -138,7 +139,7 @@ final class SwClassAdapter
         for( final Type type : methodParameterTypes )
         {
           mv.visitVarInsn( loadOpcode( type.getSort() ), index );
-          index += 1;
+          index += isDoubleSlot( type ) ? 2 : 1;
           paramDesc.append( type.getDescriptor() );
         }
         final String helperConstructorDesc = "(" + paramDesc + ")V";
@@ -158,25 +159,25 @@ final class SwClassAdapter
                   "java/lang/Object",
                   new String[]{ "java/util/concurrent/Callable" } );
 
-        int parameterID = 1;
+        int parameterID = 0;
         if( ( access & Opcodes.ACC_STATIC ) == 0 )
         {
+          parameterID += 1;
           cw.visitField( Opcodes.ACC_PRIVATE | Opcodes.ACC_FINAL,
-                         "p1",
+                         "p" + parameterID,
                          "L" + m_classname + ";",
                          null,
                          null );
-          parameterID += 1;
         }
 
         for( final Type type : methodParameterTypes )
         {
+          parameterID += 1;
           cw.visitField( Opcodes.ACC_PRIVATE | Opcodes.ACC_FINAL,
                          "p" + parameterID,
                          type.getDescriptor(),
                          null,
                          null );
-          parameterID += 1;
         }
 
         // default public constructor
@@ -185,31 +186,33 @@ final class SwClassAdapter
                                                    helperConstructorDesc,
                                                    null,
                                                    null );
-        parameterID = 1;
+        ctor.visitVarInsn( Opcodes.ALOAD, 0 );
+        ctor.visitMethodInsn( Opcodes.INVOKESPECIAL, "java/lang/Object", "<init>", "()V" );
+
+        parameterID = 0;
+        index = 0;
         if( ( access & Opcodes.ACC_STATIC ) == 0 )
         {
-          ctor.visitVarInsn( Opcodes.ALOAD, 0 );
-          ctor.visitVarInsn( Opcodes.ALOAD, 1 );
-          ctor.visitFieldInsn( Opcodes.PUTFIELD, helperClass, "p1", "L" + m_classname + ";" );
           parameterID += 1;
+          index += 1;
+          ctor.visitVarInsn( Opcodes.ALOAD, 0 );
+          ctor.visitVarInsn( Opcodes.ALOAD, index );
+          ctor.visitFieldInsn( Opcodes.PUTFIELD, helperClass, "p" + parameterID, "L" + m_classname + ";" );
         }
 
         for( final Type type : methodParameterTypes )
         {
-          // the this object
+          parameterID += 1;
+          index += isDoubleSlot( type ) ? 2 : 1;
           ctor.visitVarInsn( Opcodes.ALOAD, 0 );
           //the parameter to put in field
-          ctor.visitVarInsn( loadOpcode( type.getSort() ), parameterID );
+          ctor.visitVarInsn( loadOpcode( type.getSort() ), index );
           ctor.visitFieldInsn( Opcodes.PUTFIELD,
                                helperClass,
                                "p" + parameterID,
                                type.getDescriptor() );
-
-          parameterID += 1;
         }
 
-        ctor.visitVarInsn( Opcodes.ALOAD, 0 );
-        ctor.visitMethodInsn( Opcodes.INVOKESPECIAL, "java/lang/Object", "<init>", "()V" );
         ctor.visitInsn( Opcodes.RETURN );
         ctor.visitMaxs( 1, 1 );
         ctor.visitEnd();
@@ -222,24 +225,22 @@ final class SwClassAdapter
                           null,
                           new String[]{ "java/lang/Exception" } );
 
-        parameterID = 1;
+        parameterID = 0;
         if( ( access & Opcodes.ACC_STATIC ) == 0 )
         {
-          callMethod.visitVarInsn( Opcodes.ALOAD, 0 );
-          callMethod.visitFieldInsn( Opcodes.GETFIELD, helperClass, "p1", "L" + m_classname + ";" );
           parameterID += 1;
+          callMethod.visitVarInsn( Opcodes.ALOAD, 0 );
+          callMethod.visitFieldInsn( Opcodes.GETFIELD, helperClass, "p" + parameterID, "L" + m_classname + ";" );
         }
 
         for( final Type type : methodParameterTypes )
         {
-          // the this object
+          parameterID += 1;
           callMethod.visitVarInsn( Opcodes.ALOAD, 0 );
           callMethod.visitFieldInsn( Opcodes.GETFIELD,
-                               helperClass,
-                               "p" + parameterID,
-                               type.getDescriptor() );
-
-          parameterID += 1;
+                                     helperClass,
+                                     "p" + parameterID,
+                                     type.getDescriptor() );
         }
         final int invokeOpcode;
         if( ( access & Opcodes.ACC_STATIC ) == 0 )
@@ -263,6 +264,11 @@ final class SwClassAdapter
         m_adapters.put( helperClass.replace( '/', '.' ), cw.toByteArray() );
       }
     };
+  }
+
+  private static boolean isDoubleSlot( final Type type )
+  {
+    return Type.DOUBLE == type.getSort() || Type.LONG == type.getSort();
   }
 
   static void genIsDispatchThreadInvoke( final MethodVisitor mv )
