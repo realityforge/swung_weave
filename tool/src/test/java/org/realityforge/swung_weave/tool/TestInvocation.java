@@ -59,10 +59,10 @@ public final class TestInvocation
     final String methodTypeSuffix =
       methodType == STATIC ? "s" : methodType == INSTANCE ? "i" : "c";
     final StringBuilder sb = new StringBuilder();
-    for( final Object parameter : parameters )
+    for( final Class parameterType : getParameterTypes() )
     {
       if( sb.length() == 0 ) sb.append( '_' );
-      sb.append( encodingForType( parameter.getClass() ) );
+      sb.append( encodingForType( parameterType ) );
     }
     return shortAnnotationName + "_" + methodTypeSuffix + sb;
   }
