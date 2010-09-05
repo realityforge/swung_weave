@@ -66,20 +66,27 @@ final class SwClassAdapter
         if( desc.equals( "Lorg/realityforge/swung_weave/RunInEDT;" ) )
         {
           runInEDT = true;
+          return null;
         }
-        if( desc.equals( "Lorg/realityforge/swung_weave/RunOutsideEDT;" ) )
+        else if( desc.equals( "Lorg/realityforge/swung_weave/RunOutsideEDT;" ) )
         {
           runOutsideEDT = true;
+          return null;
         }
-        if( desc.equals( "Lorg/realityforge/swung_weave/RequiresEDT;" ) )
+        else if( desc.equals( "Lorg/realityforge/swung_weave/RequiresEDT;" ) )
         {
           requiresEDT = true;
+          return null;
         }
-        if( desc.equals( "Lorg/realityforge/swung_weave/DisallowsEDT;" ) )
+        else if( desc.equals( "Lorg/realityforge/swung_weave/DisallowsEDT;" ) )
         {
           disallowsEDT = true;
+          return null;
         }
+        else
+        {
         return super.visitAnnotation( desc, visible );
+        }
       }
 
       public void visitCode()
