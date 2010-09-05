@@ -1,5 +1,6 @@
 package org.realityforge.swung_weave.tool;
 
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 import org.objectweb.asm.AnnotationVisitor;
@@ -46,6 +47,10 @@ final class SwClassAdapter
                                     final String signature,
                                     final String[] exceptions )
   {
+    if( methodName.equals( "<init>" ) || methodName.equals( "<cinit>" ) )
+    {
+      return super.visitMethod( access, methodName, desc, signature, exceptions );
+    }
     final Type[] methodParameterTypes = Type.getArgumentTypes( desc );
     final Type returnType = Type.getReturnType( desc );
     MethodVisitor v = cv.visitMethod( access,
