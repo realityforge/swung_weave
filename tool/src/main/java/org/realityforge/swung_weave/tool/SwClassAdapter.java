@@ -139,8 +139,9 @@ final class SwClassAdapter
         for( final Type type : methodParameterTypes )
         {
           mv.visitVarInsn( loadOpcode( type.getSort() ), index );
-          index += isDoubleSlot( type ) ? 2 : 1;
+          index += 1;
           paramDesc.append( type.getDescriptor() );
+          index += isDoubleSlot( type ) ? 1 : 0;
         }
         final String helperConstructorDesc = "(" + paramDesc + ")V";
         mv.visitMethodInsn( Opcodes.INVOKESPECIAL, helperClass, "<init>", helperConstructorDesc );
@@ -203,7 +204,7 @@ final class SwClassAdapter
         for( final Type type : methodParameterTypes )
         {
           parameterID += 1;
-          index += isDoubleSlot( type ) ? 2 : 1;
+          index += 1;
           ctor.visitVarInsn( Opcodes.ALOAD, 0 );
           //the parameter to put in field
           ctor.visitVarInsn( loadOpcode( type.getSort() ), index );
@@ -211,6 +212,7 @@ final class SwClassAdapter
                                helperClass,
                                "p" + parameterID,
                                type.getDescriptor() );
+          index += isDoubleSlot( type ) ? 1 : 0;
         }
 
         ctor.visitInsn( Opcodes.RETURN );
