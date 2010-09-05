@@ -126,6 +126,31 @@ public class ClassToWeave
     record( RequiresEDT.class, TestInvocation.STATIC, new Object[]{ v } );
   }
 
+  @RequiresEDT
+  public static void RequiresEDT_s_ZBCSIJLFDAaZaBaCaSaIaJaLaFaDaA( final boolean v1,
+                                                                   final byte v2,
+                                                                   final char v3,
+                                                                   final short v4,
+                                                                   final int v5,
+                                                                   final long v6,
+                                                                   final float v7,
+                                                                   final double v8,
+                                                                   final String v9,
+                                                                   final boolean[] v10,
+                                                                   final byte[] v11,
+                                                                   final char[] v12,
+                                                                   final short[] v13,
+                                                                   final int[] v14,
+                                                                   final long[] v15,
+                                                                   final float[] v16,
+                                                                   final double[] v17,
+                                                                   final String[] v18 )
+  {
+    record( RequiresEDT.class,
+            TestInvocation.STATIC,
+            new Object[]{ v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18 } );
+  }
+
   // Instance methods for RequiresEDT
 
   @RequiresEDT
@@ -240,6 +265,31 @@ public class ClassToWeave
   public void RequiresEDT_i_aA( final String[] v )
   {
     record( RequiresEDT.class, TestInvocation.INSTANCE, new Object[]{ v } );
+  }
+
+  @RequiresEDT
+  public void RequiresEDT_i_ZBCSIJLFDAaZaBaCaSaIaJaLaFaDaA( final boolean v1,
+                                                            final byte v2,
+                                                            final char v3,
+                                                            final short v4,
+                                                            final int v5,
+                                                            final long v6,
+                                                            final float v7,
+                                                            final double v8,
+                                                            final String v9,
+                                                            final boolean[] v10,
+                                                            final byte[] v11,
+                                                            final char[] v12,
+                                                            final short[] v13,
+                                                            final int[] v14,
+                                                            final long[] v15,
+                                                            final float[] v16,
+                                                            final double[] v17,
+                                                            final String[] v18 )
+  {
+    record( RequiresEDT.class,
+            TestInvocation.INSTANCE,
+            new Object[]{ v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18 } );
   }
 
   // Static methods for DisallowsEDT
@@ -358,6 +408,31 @@ public class ClassToWeave
     record( DisallowsEDT.class, TestInvocation.STATIC, new Object[]{ v } );
   }
 
+  @DisallowsEDT
+  public static void DisallowsEDT_s_ZBCSIJLFDAaZaBaCaSaIaJaLaFaDaA( final boolean v1,
+                                                                    final byte v2,
+                                                                    final char v3,
+                                                                    final short v4,
+                                                                    final int v5,
+                                                                    final long v6,
+                                                                    final float v7,
+                                                                    final double v8,
+                                                                    final String v9,
+                                                                    final boolean[] v10,
+                                                                    final byte[] v11,
+                                                                    final char[] v12,
+                                                                    final short[] v13,
+                                                                    final int[] v14,
+                                                                    final long[] v15,
+                                                                    final float[] v16,
+                                                                    final double[] v17,
+                                                                    final String[] v18 )
+  {
+    record( DisallowsEDT.class,
+            TestInvocation.STATIC,
+            new Object[]{ v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18 } );
+  }
+
   // Instance methods for DisallowsEDT
 
   @DisallowsEDT
@@ -473,6 +548,32 @@ public class ClassToWeave
   {
     record( DisallowsEDT.class, TestInvocation.INSTANCE, new Object[]{ v } );
   }
+
+  @DisallowsEDT
+  public void DisallowsEDT_i_ZBCSIJLFDAaZaBaCaSaIaJaLaFaDaA( final boolean v1,
+                                                             final byte v2,
+                                                             final char v3,
+                                                             final short v4,
+                                                             final int v5,
+                                                             final long v6,
+                                                             final float v7,
+                                                             final double v8,
+                                                             final String v9,
+                                                             final boolean[] v10,
+                                                             final byte[] v11,
+                                                             final char[] v12,
+                                                             final short[] v13,
+                                                             final int[] v14,
+                                                             final long[] v15,
+                                                             final float[] v16,
+                                                             final double[] v17,
+                                                             final String[] v18 )
+  {
+    record( DisallowsEDT.class,
+            TestInvocation.INSTANCE,
+            new Object[]{ v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18 } );
+  }
+
   // Static methods for RunInEDT
 
   @RunInEDT
@@ -587,6 +688,31 @@ public class ClassToWeave
   public static void RunInEDT_s_aA( final String[] v )
   {
     record( RunInEDT.class, TestInvocation.STATIC, new Object[]{ v } );
+  }
+
+  @RunInEDT
+  public static void RunInEDT_s_ZBCSIJLFDAaZaBaCaSaIaJaLaFaDaA( final boolean v1,
+                                                                final byte v2,
+                                                                final char v3,
+                                                                final short v4,
+                                                                final int v5,
+                                                                final long v6,
+                                                                final float v7,
+                                                                final double v8,
+                                                                final String v9,
+                                                                final boolean[] v10,
+                                                                final byte[] v11,
+                                                                final char[] v12,
+                                                                final short[] v13,
+                                                                final int[] v14,
+                                                                final long[] v15,
+                                                                final float[] v16,
+                                                                final double[] v17,
+                                                                final String[] v18 )
+  {
+    record( RunInEDT.class,
+            TestInvocation.STATIC,
+            new Object[]{ v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18 } );
   }
 
   // Instance methods for RunInEDT
@@ -705,6 +831,31 @@ public class ClassToWeave
     record( RunInEDT.class, TestInvocation.INSTANCE, new Object[]{ v } );
   }
 
+  @RunInEDT
+  public void RunInEDT_i_ZBCSIJLFDAaZaBaCaSaIaJaLaFaDaA( final boolean v1,
+                                                         final byte v2,
+                                                         final char v3,
+                                                         final short v4,
+                                                         final int v5,
+                                                         final long v6,
+                                                         final float v7,
+                                                         final double v8,
+                                                         final String v9,
+                                                         final boolean[] v10,
+                                                         final byte[] v11,
+                                                         final char[] v12,
+                                                         final short[] v13,
+                                                         final int[] v14,
+                                                         final long[] v15,
+                                                         final float[] v16,
+                                                         final double[] v17,
+                                                         final String[] v18 )
+  {
+    record( RunInEDT.class,
+            TestInvocation.INSTANCE,
+            new Object[]{ v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18 } );
+  }
+
   // Static methods for RunOutsideEDT
 
   @RunOutsideEDT
@@ -819,6 +970,31 @@ public class ClassToWeave
   public static void RunOutsideEDT_s_aA( final String[] v )
   {
     record( RunOutsideEDT.class, TestInvocation.STATIC, new Object[]{ v } );
+  }
+
+  @RunOutsideEDT
+  public static void RunOutsideEDT_s_ZBCSIJLFDAaZaBaCaSaIaJaLaFaDaA( final boolean v1,
+                                                                     final byte v2,
+                                                                     final char v3,
+                                                                     final short v4,
+                                                                     final int v5,
+                                                                     final long v6,
+                                                                     final float v7,
+                                                                     final double v8,
+                                                                     final String v9,
+                                                                     final boolean[] v10,
+                                                                     final byte[] v11,
+                                                                     final char[] v12,
+                                                                     final short[] v13,
+                                                                     final int[] v14,
+                                                                     final long[] v15,
+                                                                     final float[] v16,
+                                                                     final double[] v17,
+                                                                     final String[] v18 )
+  {
+    record( RunOutsideEDT.class,
+            TestInvocation.STATIC,
+            new Object[]{ v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18 } );
   }
 
   // Instance methods for RunOutsideEDT
@@ -936,6 +1112,32 @@ public class ClassToWeave
   {
     record( RunOutsideEDT.class, TestInvocation.INSTANCE, new Object[]{ v } );
   }
+
+  @RunOutsideEDT
+  public static void RunOutsideEDT_i_ZBCSIJLFDAaZaBaCaSaIaJaLaFaDaA( final boolean v1,
+                                                                     final byte v2,
+                                                                     final char v3,
+                                                                     final short v4,
+                                                                     final int v5,
+                                                                     final long v6,
+                                                                     final float v7,
+                                                                     final double v8,
+                                                                     final String v9,
+                                                                     final boolean[] v10,
+                                                                     final byte[] v11,
+                                                                     final char[] v12,
+                                                                     final short[] v13,
+                                                                     final int[] v14,
+                                                                     final long[] v15,
+                                                                     final float[] v16,
+                                                                     final double[] v17,
+                                                                     final String[] v18 )
+  {
+    record( RunOutsideEDT.class,
+            TestInvocation.INSTANCE,
+            new Object[]{ v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18 } );
+  }
+
   private static void record( final Class<?> annotation,
                               final int methodType,
                               final Object[] parameters )
