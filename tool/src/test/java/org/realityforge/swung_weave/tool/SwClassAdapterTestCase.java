@@ -167,7 +167,7 @@ public class SwClassAdapterTestCase
                       'a',
                       (short)2,
                       3,
-                      new Long( 4L ),
+                      4L,
                       5F,
                       6D,
                       "Hello",
