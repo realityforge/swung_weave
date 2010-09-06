@@ -1,6 +1,5 @@
 package org.realityforge.swung_weave.tool;
 
-import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 import org.objectweb.asm.AnnotationVisitor;
