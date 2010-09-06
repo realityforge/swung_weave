@@ -23,7 +23,36 @@ public class MainTestCase
     final File targetDir = targetDir();
 
     final CollectingHandler handler = initLogger();
-    Main.main( new String[]{ "--verbose", "--debug", "-d", targetDir.getAbsolutePath(), srcFile.getAbsolutePath() } );
+    Main.main( new String[]{ "--debug", "-d", targetDir.getAbsolutePath(), srcFile.getAbsolutePath() } );
+
+    final File targetFile =
+      new File( targetDir, "org/realityforge/swung_weave/tool/ClassToWeave.class" );
+
+    handler.assertMatches( Pattern.quote( "Evaluating: " + srcFile.getAbsolutePath() ) );
+    handler.assertMatches( Pattern.quote( "Created dir: " +
+                                          targetFile.getParentFile().getAbsolutePath() ) );
+    handler.assertMatches( Pattern.quote( "Transformed: " + srcFile.getAbsolutePath() ) );
+    handler.assertMatches( "Transformed: 1 Skipped: 0" );
+
+    Assert.assertTrue( targetFile.exists() );
+  }
+
+  @Test
+  public void verifyProcessFileWithAnnotationsWithFileSuppliedByAt()
+    throws Throwable
+  {
+
+    final File srcFile = copyClassToSourceDir( "ClassToWeave.class" );
+    final File targetDir = targetDir();
+
+    final File fileList = new File( tmpDir(), "Filelist.txt" );
+      final FileOutputStream outputStream = new FileOutputStream( fileList );
+    outputStream.write( srcFile.getAbsolutePath().getBytes() );
+    outputStream.close();
+
+
+    final CollectingHandler handler = initLogger();
+    Main.main( new String[]{ "--verbose", "--debug", "-d", targetDir.getAbsolutePath(), "@" + fileList.getAbsolutePath() } );
 
     final File targetFile =
       new File( targetDir, "org/realityforge/swung_weave/tool/ClassToWeave.class" );
