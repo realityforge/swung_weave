@@ -14,9 +14,10 @@ import org.objectweb.asm.Type;
 final class SwClassAdapter
   extends ClassAdapter
 {
-  private String m_classname;
-  private int m_adapterCount;
-  private final Map<String, byte[]> m_adapters = new HashMap<String, byte[]>();
+  private String _classname;
+  private int _adapterCount;
+  private boolean _matchedAnnotations;
+  private final Map<String, byte[]> _adapters = new HashMap<String, byte[]>();
 
   public SwClassAdapter( final ClassWriter cw )
   {
@@ -25,7 +26,17 @@ final class SwClassAdapter
 
   public Map<String, byte[]> getClassData()
   {
-    return m_adapters;
+    return _adapters;
+  }
+
+  public String getClassname()
+  {
+    return _classname;
+  }
+
+  public boolean matchedAnnotations()
+  {
+    return _matchedAnnotations;
   }
 
   @Override
@@ -36,7 +47,7 @@ final class SwClassAdapter
                      final String superName,
                      final String[] interfaces )
   {
-    m_classname = name;
+    _classname = name;
     super.visit( version, access, name, signature, superName, interfaces );
   }
 
@@ -70,21 +81,25 @@ final class SwClassAdapter
         if( desc.equals( "Lorg/realityforge/swung_weave/RunInEDT;" ) )
         {
           runInEDT = true;
+          _matchedAnnotations = true;
           return null;
         }
         else if( desc.equals( "Lorg/realityforge/swung_weave/RunOutsideEDT;" ) )
         {
           runOutsideEDT = true;
+          _matchedAnnotations = true;
           return null;
         }
         else if( desc.equals( "Lorg/realityforge/swung_weave/RequiresEDT;" ) )
         {
           requiresEDT = true;
+          _matchedAnnotations = true;
           return null;
         }
         else if( desc.equals( "Lorg/realityforge/swung_weave/DisallowsEDT;" ) )
         {
           disallowsEDT = true;
+          _matchedAnnotations = true;
           return null;
         }
         else
@@ -132,9 +147,9 @@ final class SwClassAdapter
         genIsDispatchThreadInvoke( mv );
         final Label end = new Label();
         mv.visitJumpInsn( toEDT ? Opcodes.IFNE : Opcodes.IFEQ, end );
-        m_adapterCount += 1;
+        _adapterCount += 1;
         final String helperClass =
-          m_classname + "$Sw_" + methodName + "_" + m_adapterCount;
+          _classname + "$Sw_" + methodName + "_" + _adapterCount;
         mv.visitTypeInsn( Opcodes.NEW, helperClass );
         mv.visitInsn( Opcodes.DUP );
         final StringBuilder paramDesc = new StringBuilder();
@@ -142,7 +157,7 @@ final class SwClassAdapter
         if( ( access & Opcodes.ACC_STATIC ) == 0 )
         {
           paramDesc.append( 'L' );
-          paramDesc.append( m_classname );
+          paramDesc.append( _classname );
           paramDesc.append( ';' );
           mv.visitVarInsn( Opcodes.ALOAD, index );
           index += 1;
@@ -177,7 +192,7 @@ final class SwClassAdapter
           parameterID += 1;
           cw.visitField( Opcodes.ACC_PRIVATE | Opcodes.ACC_FINAL,
                          "p" + parameterID,
-                         "L" + m_classname + ";",
+                         "L" + _classname + ";",
                          null,
                          null );
         }
@@ -209,7 +224,7 @@ final class SwClassAdapter
           index += 1;
           ctor.visitVarInsn( Opcodes.ALOAD, 0 );
           ctor.visitVarInsn( Opcodes.ALOAD, index );
-          ctor.visitFieldInsn( Opcodes.PUTFIELD, helperClass, "p" + parameterID, "L" + m_classname + ";" );
+          ctor.visitFieldInsn( Opcodes.PUTFIELD, helperClass, "p" + parameterID, "L" + _classname + ";" );
         }
 
         for( final Type type : methodParameterTypes )
@@ -243,7 +258,7 @@ final class SwClassAdapter
         {
           parameterID += 1;
           callMethod.visitVarInsn( Opcodes.ALOAD, 0 );
-          callMethod.visitFieldInsn( Opcodes.GETFIELD, helperClass, "p" + parameterID, "L" + m_classname + ";" );
+          callMethod.visitFieldInsn( Opcodes.GETFIELD, helperClass, "p" + parameterID, "L" + _classname + ";" );
         }
 
         for( final Type type : methodParameterTypes )
@@ -264,7 +279,7 @@ final class SwClassAdapter
         {
           invokeOpcode = Opcodes.INVOKESTATIC;
         }
-        callMethod.visitMethodInsn( invokeOpcode, m_classname, methodName, desc );
+        callMethod.visitMethodInsn( invokeOpcode, _classname, methodName, desc );
         if( Type.VOID == returnType.getSort() )
         {
           callMethod.visitInsn( Opcodes.ACONST_NULL );
@@ -274,7 +289,7 @@ final class SwClassAdapter
         callMethod.visitMaxs( 0, 0 );
         callMethod.visitEnd();
 
-        m_adapters.put( helperClass.replace( '/', '.' ), cw.toByteArray() );
+        _adapters.put( helperClass.replace( '/', '.' ), cw.toByteArray() );
       }
     };
   }
