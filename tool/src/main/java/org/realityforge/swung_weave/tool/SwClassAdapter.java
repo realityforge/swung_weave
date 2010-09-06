@@ -70,35 +70,35 @@ final class SwClassAdapter
                                       exceptions );
     return new MethodAdapter( v )
     {
-      private boolean requiresEDT;
-      private boolean disallowsEDT;
-      private boolean runInEDT;
-      private boolean runOutsideEDT;
+      private boolean _requiresEDT;
+      private boolean _disallowsEDT;
+      private boolean _runInEDT;
+      private boolean _runOutsideEDT;
 
       @Override
       public AnnotationVisitor visitAnnotation( final String desc, final boolean visible )
       {
         if( desc.equals( "Lorg/realityforge/swung_weave/RunInEDT;" ) )
         {
-          runInEDT = true;
+          _runInEDT = true;
           _matchedAnnotations = true;
           return null;
         }
         else if( desc.equals( "Lorg/realityforge/swung_weave/RunOutsideEDT;" ) )
         {
-          runOutsideEDT = true;
+          _runOutsideEDT = true;
           _matchedAnnotations = true;
           return null;
         }
         else if( desc.equals( "Lorg/realityforge/swung_weave/RequiresEDT;" ) )
         {
-          requiresEDT = true;
+          _requiresEDT = true;
           _matchedAnnotations = true;
           return null;
         }
         else if( desc.equals( "Lorg/realityforge/swung_weave/DisallowsEDT;" ) )
         {
-          disallowsEDT = true;
+          _disallowsEDT = true;
           _matchedAnnotations = true;
           return null;
         }
@@ -110,17 +110,17 @@ final class SwClassAdapter
 
       public void visitCode()
       {
-        if( runInEDT )
+        if( _runInEDT )
         {
           genTransfer( true );
         }
 
-        if( runOutsideEDT )
+        if( _runOutsideEDT )
         {
           genTransfer( false );
         }
 
-        if( requiresEDT )
+        if( _requiresEDT )
         {
           genIsDispatchThreadInvoke( mv );
           final Label end = new Label();
@@ -130,7 +130,7 @@ final class SwClassAdapter
                                     "invoked in the Event Dispatch Thread." );
           mv.visitLabel( end );
         }
-        if( disallowsEDT )
+        if( _disallowsEDT )
         {
           genIsDispatchThreadInvoke( mv );
           final Label end = new Label();
