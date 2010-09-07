@@ -280,11 +280,50 @@ final class SwClassAdapter
           invokeOpcode = Opcodes.INVOKESTATIC;
         }
         callMethod.visitMethodInsn( invokeOpcode, _classname, methodName, desc );
-        if( Type.VOID == returnType.getSort() )
+        final int sort = returnType.getSort();
+        if( Type.VOID == sort )
         {
           callMethod.visitInsn( Opcodes.ACONST_NULL );
         }
+        else if( Type.BOOLEAN == sort )
+        {
+          callMethod.visitMethodInsn( Opcodes.INVOKESTATIC, "java/lang/Boolean", "valueOf", "(Z)Ljava/lang/Boolean;" );
+        }
+        else if( Type.BYTE == sort )
+        {
+          callMethod.visitMethodInsn( Opcodes.INVOKESTATIC, "java/lang/Byte", "valueOf", "(B)Ljava/lang/Byte;" );
+        }
+        else if( Type.CHAR == sort)
+        {
+          callMethod.visitMethodInsn( Opcodes.INVOKESTATIC, "java/lang/Character", "valueOf", "(C)Ljava/lang/Character;" );
+        }
+        else if( Type.SHORT == sort )
+        {
+          callMethod.visitMethodInsn( Opcodes.INVOKESTATIC, "java/lang/Short", "valueOf", "(S)Ljava/lang/Short;" );
+        }
+        else if( Type.INT == sort )
+        {
+          callMethod.visitMethodInsn( Opcodes.INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;" );
+        }
+        else if( Type.LONG == sort )
+        {
+          callMethod.visitMethodInsn( Opcodes.INVOKESTATIC, "java/lang/Long", "valueOf", "(J)Ljava/lang/Long;" );
+        }
+        else if( Type.FLOAT == sort )
+        {
+          callMethod.visitMethodInsn( Opcodes.INVOKESTATIC, "java/lang/Float", "valueOf", "(F)Ljava/lang/Float;" );
+        }
+        else if( Type.DOUBLE == sort )
+        {
+          callMethod.visitMethodInsn( Opcodes.INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;" );
+        }
+        else //OBJECT and arrays
+        {
+          //Nothing
+        }
         callMethod.visitInsn( Opcodes.ARETURN );
+
+
         // max stack and max locals automatically computed
         callMethod.visitMaxs( 0, 0 );
         callMethod.visitEnd();
@@ -328,28 +367,57 @@ final class SwClassAdapter
       mv.visitInsn( Opcodes.POP );
       mv.visitInsn( Opcodes.RETURN );
     }
-    else if( Type.BOOLEAN == sort ||
-             Type.BYTE == sort ||
-             Type.CHAR == sort ||
-             Type.SHORT == sort ||
-             Type.INT == sort )
+    else if( Type.BOOLEAN == sort )
     {
+      mv.visitTypeInsn( Opcodes.CHECKCAST, "java/lang/Boolean" );
+      mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL, "java/lang/Boolean", "booleanValue", "()Z" );
+      mv.visitInsn( Opcodes.IRETURN );
+    }
+    else if( Type.BYTE == sort )
+    {
+      mv.visitTypeInsn( Opcodes.CHECKCAST, "java/lang/Byte" );
+      mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL, "java/lang/Byte", "byteValue", "()B" );
+      mv.visitInsn( Opcodes.IRETURN );
+    }
+    else if( Type.CHAR == sort)
+    {
+      mv.visitTypeInsn( Opcodes.CHECKCAST, "java/lang/Character" );
+      mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL, "java/lang/Character", "charValue", "()C" );
+      mv.visitInsn( Opcodes.IRETURN );
+    }
+    else if( Type.SHORT == sort )
+    {
+      mv.visitTypeInsn( Opcodes.CHECKCAST, "java/lang/Short" );
+      mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL, "java/lang/Short", "shortValue", "()S" );
+      mv.visitInsn( Opcodes.IRETURN );
+    }
+    else if( Type.INT == sort )
+    {
+      mv.visitTypeInsn( Opcodes.CHECKCAST, "java/lang/Integer" );
+      mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL, "java/lang/Integer", "intValue", "()I" );
       mv.visitInsn( Opcodes.IRETURN );
     }
     else if( Type.LONG == sort )
     {
+      mv.visitTypeInsn( Opcodes.CHECKCAST, "java/lang/Long" );
+      mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL, "java/lang/Long", "longValue", "()J" );
       mv.visitInsn( Opcodes.LRETURN );
     }
     else if( Type.FLOAT == sort )
     {
+      mv.visitTypeInsn( Opcodes.CHECKCAST, "java/lang/Float" );
+      mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL, "java/lang/Float", "floatValue", "()F" );
       mv.visitInsn( Opcodes.FRETURN );
     }
     else if( Type.DOUBLE == sort )
     {
+      mv.visitTypeInsn( Opcodes.CHECKCAST, "java/lang/Double" );
+      mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL, "java/lang/Double", "doubleValue", "()D" );
       mv.visitInsn( Opcodes.DRETURN );
     }
     else //OBJECT and arrays
     {
+      mv.visitTypeInsn( Opcodes.CHECKCAST, returnType.getInternalName() );
       mv.visitInsn( Opcodes.ARETURN );
     }
   }
