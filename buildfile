@@ -56,6 +56,27 @@ define_with_central_layout("swung-weave", true, false) do
     end
   end
 
+  desc "SwingWeave: Buildr extension"
+  define_with_central_layout "buildr" do
+    package(:gem).tap do |gem|
+      gem.spec do |spec|
+        spec.authors        = ['Peter Donald']
+        spec.email          = ["peter@realityforge.org"]
+
+        spec.homepage       = "http://github.com/realityforge/swung_weave"
+        spec.summary        = "Buildr extension to run the swung_weave tool"
+        spec.description    = <<-TEXT
+Buildr extension to process bytecode using swung-weaver. Swung weaver is
+bytecode weaving of annotated UI classes to ensure all UI updates occur
+in the Event Dispatch Thread
+TEXT
+        spec.require_paths  = ['lib']
+        spec.has_rdoc         = false
+      end
+      gem.include :from => _("lib"), :path => "lib"
+      gem.include ['LICENSE', 'README.rdoc', 'NOTICE'] 
+    end
+  end
 end
 
 namespace :deploy do
