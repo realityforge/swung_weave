@@ -10,6 +10,260 @@ import org.testng.Assert;
 @SuppressWarnings( { "UnusedDeclaration" } )
 public class ClassToWeave
 {
+  @RequiresEDT
+  public static boolean RequiresEDT_s_rZ()
+  {
+    record( RequiresEDT.class, TestInvocation.STATIC, new Object[0], boolean.class );
+    return true;
+  }
+
+  @RequiresEDT
+  public static byte RequiresEDT_s_rB()
+  {
+    record( RequiresEDT.class, TestInvocation.STATIC, new Object[0], byte.class );
+    return (byte) 1;
+  }
+
+  @RequiresEDT
+  public static char RequiresEDT_s_rC()
+  {
+    record( RequiresEDT.class, TestInvocation.STATIC, new Object[0], char.class );
+    return 'a';
+  }
+
+  @RequiresEDT
+  public static short RequiresEDT_s_rS()
+  {
+    record( RequiresEDT.class, TestInvocation.STATIC, new Object[0], short.class );
+    return (short) 1;
+  }
+
+  @RequiresEDT
+  public static int RequiresEDT_s_rI()
+  {
+    record( RequiresEDT.class, TestInvocation.STATIC, new Object[0], int.class );
+    return 1;
+  }
+
+  @RequiresEDT
+  public static long RequiresEDT_s_rJ()
+  {
+    record( RequiresEDT.class, TestInvocation.STATIC, new Object[0], long.class );
+    return 1L;
+  }
+
+  @RequiresEDT
+  public static float RequiresEDT_s_rF()
+  {
+    record( RequiresEDT.class, TestInvocation.STATIC, new Object[0], float.class );
+    return 1.0F;
+  }
+
+  @RequiresEDT
+  public static double RequiresEDT_s_rD()
+  {
+    record( RequiresEDT.class, TestInvocation.STATIC, new Object[0], double.class );
+    return 1.0D;
+  }
+
+  @RequiresEDT
+  public static String RequiresEDT_s_rA()
+  {
+    record( RequiresEDT.class, TestInvocation.STATIC, new Object[0], String.class );
+    return "";
+  }
+
+  @RequiresEDT
+  public static boolean[] RequiresEDT_s_raZ()
+  {
+    record( RequiresEDT.class, TestInvocation.STATIC, new Object[0], boolean[].class );
+    return new boolean[0];
+  }
+
+  @RequiresEDT
+  public static byte[] RequiresEDT_s_raB()
+  {
+    record( RequiresEDT.class, TestInvocation.STATIC, new Object[0], byte[].class );
+    return new byte[0];
+  }
+
+  @RequiresEDT
+  public static char[] RequiresEDT_s_raC()
+  {
+    record( RequiresEDT.class, TestInvocation.STATIC, new Object[0], char[].class );
+    return new char[0];
+  }
+
+  @RequiresEDT
+  public static short[] RequiresEDT_s_raS()
+  {
+    record( RequiresEDT.class, TestInvocation.STATIC, new Object[0], short[].class );
+    return new short[0];
+  }
+
+  @RequiresEDT
+  public static int[] RequiresEDT_s_raI()
+  {
+    record( RequiresEDT.class, TestInvocation.STATIC, new Object[0], int[].class );
+    return new int[0];
+  }
+
+  @RequiresEDT
+  public static long[] RequiresEDT_s_raJ()
+  {
+    record( RequiresEDT.class, TestInvocation.STATIC, new Object[0], long[].class );
+    return new long[0];
+  }
+
+  @RequiresEDT
+  public static float[] RequiresEDT_s_raF()
+  {
+    record( RequiresEDT.class, TestInvocation.STATIC, new Object[0], float[].class );
+    return new float[0];
+  }
+
+  @RequiresEDT
+  public static double[] RequiresEDT_s_raD()
+  {
+    record( RequiresEDT.class, TestInvocation.STATIC, new Object[0], double[].class );
+    return new double[0];
+  }
+
+  @RequiresEDT
+  public static String[] RequiresEDT_s_raA()
+  {
+    record( RequiresEDT.class, TestInvocation.STATIC, new Object[0], String[].class );
+    return new String[0];
+  }
+
+  // Instance methods with return values
+
+  @RequiresEDT
+  public boolean RequiresEDT_i_rZ()
+  {
+    record( RequiresEDT.class, TestInvocation.INSTANCE, new Object[0], boolean.class );
+    return true;
+  }
+
+  @RequiresEDT
+  public byte RequiresEDT_i_rB()
+  {
+    record( RequiresEDT.class, TestInvocation.INSTANCE, new Object[0], byte.class );
+    return (byte) 1;
+  }
+
+  @RequiresEDT
+  public char RequiresEDT_i_rC()
+  {
+    record( RequiresEDT.class, TestInvocation.INSTANCE, new Object[0], char.class );
+    return (char) 1;
+  }
+
+  @RequiresEDT
+  public short RequiresEDT_i_rS()
+  {
+    record( RequiresEDT.class, TestInvocation.INSTANCE, new Object[0], short.class );
+    return (short) 1;
+  }
+
+  @RequiresEDT
+  public int RequiresEDT_i_rI()
+  {
+    record( RequiresEDT.class, TestInvocation.INSTANCE, new Object[0], int.class );
+    return 1;
+  }
+
+  @RequiresEDT
+  public long RequiresEDT_i_rJ()
+  {
+    record( RequiresEDT.class, TestInvocation.INSTANCE, new Object[0], long.class );
+    return 1L;
+  }
+
+  @RequiresEDT
+  public float RequiresEDT_i_rF()
+  {
+    record( RequiresEDT.class, TestInvocation.INSTANCE, new Object[0], float.class );
+    return 1.0F;
+  }
+
+  @RequiresEDT
+  public double RequiresEDT_i_rD()
+  {
+    record( RequiresEDT.class, TestInvocation.INSTANCE, new Object[0], double.class );
+    return 1.0D;
+  }
+
+  @RequiresEDT
+  public String RequiresEDT_i_rA()
+  {
+    record( RequiresEDT.class, TestInvocation.INSTANCE, new Object[0], String.class );
+    return "";
+  }
+
+  @RequiresEDT
+  public boolean[] RequiresEDT_i_raZ()
+  {
+    record( RequiresEDT.class, TestInvocation.INSTANCE, new Object[0], boolean[].class );
+    return new boolean[0];
+  }
+
+  @RequiresEDT
+  public byte[] RequiresEDT_i_raB()
+  {
+    record( RequiresEDT.class, TestInvocation.INSTANCE, new Object[0], byte[].class );
+    return new byte[0];
+  }
+
+  @RequiresEDT
+  public char[] RequiresEDT_i_raC()
+  {
+    record( RequiresEDT.class, TestInvocation.INSTANCE, new Object[0], char[].class );
+    return new char[0];
+  }
+
+  @RequiresEDT
+  public short[] RequiresEDT_i_raS()
+  {
+    record( RequiresEDT.class, TestInvocation.INSTANCE, new Object[0], short[].class );
+    return new short[0];
+  }
+
+  @RequiresEDT
+  public int[] RequiresEDT_i_raI()
+  {
+    record( RequiresEDT.class, TestInvocation.INSTANCE, new Object[0], int[].class );
+    return new int[0];
+  }
+
+  @RequiresEDT
+  public long[] RequiresEDT_i_raJ()
+  {
+    record( RequiresEDT.class, TestInvocation.INSTANCE, new Object[0], long[].class );
+    return new long[0];
+  }
+
+  @RequiresEDT
+  public float[] RequiresEDT_i_raF()
+  {
+    record( RequiresEDT.class, TestInvocation.INSTANCE, new Object[0], float[].class );
+    return new float[0];
+  }
+
+  @RequiresEDT
+  public double[] RequiresEDT_i_raD()
+  {
+    record( RequiresEDT.class, TestInvocation.INSTANCE, new Object[0], double[].class );
+    return new double[0];
+  }
+
+  @RequiresEDT
+  public String[] RequiresEDT_i_raA()
+  {
+    record( RequiresEDT.class, TestInvocation.INSTANCE, new Object[0], String[].class );
+    return new String[0];
+  }
+
   // Static methods for RequiresEDT
 
   @RequiresEDT
@@ -293,6 +547,261 @@ public class ClassToWeave
             new Object[]{ v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18 },
             Void.TYPE );
   }
+
+  @DisallowsEDT
+  public static boolean DisallowsEDT_s_rZ()
+  {
+    record( DisallowsEDT.class, TestInvocation.STATIC, new Object[0], boolean.class );
+    return true;
+  }
+
+  @DisallowsEDT
+  public static byte DisallowsEDT_s_rB()
+  {
+    record( DisallowsEDT.class, TestInvocation.STATIC, new Object[0], byte.class );
+    return (byte) 1;
+  }
+
+  @DisallowsEDT
+  public static char DisallowsEDT_s_rC()
+  {
+    record( DisallowsEDT.class, TestInvocation.STATIC, new Object[0], char.class );
+    return 'a';
+  }
+
+  @DisallowsEDT
+  public static short DisallowsEDT_s_rS()
+  {
+    record( DisallowsEDT.class, TestInvocation.STATIC, new Object[0], short.class );
+    return (short) 1;
+  }
+
+  @DisallowsEDT
+  public static int DisallowsEDT_s_rI()
+  {
+    record( DisallowsEDT.class, TestInvocation.STATIC, new Object[0], int.class );
+    return 1;
+  }
+
+  @DisallowsEDT
+  public static long DisallowsEDT_s_rJ()
+  {
+    record( DisallowsEDT.class, TestInvocation.STATIC, new Object[0], long.class );
+    return 1L;
+  }
+
+  @DisallowsEDT
+  public static float DisallowsEDT_s_rF()
+  {
+    record( DisallowsEDT.class, TestInvocation.STATIC, new Object[0], float.class );
+    return 1.0F;
+  }
+
+  @DisallowsEDT
+  public static double DisallowsEDT_s_rD()
+  {
+    record( DisallowsEDT.class, TestInvocation.STATIC, new Object[0], double.class );
+    return 1.0D;
+  }
+
+  @DisallowsEDT
+  public static String DisallowsEDT_s_rA()
+  {
+    record( DisallowsEDT.class, TestInvocation.STATIC, new Object[0], String.class );
+    return "";
+  }
+
+  @DisallowsEDT
+  public static boolean[] DisallowsEDT_s_raZ()
+  {
+    record( DisallowsEDT.class, TestInvocation.STATIC, new Object[0], boolean[].class );
+    return new boolean[0];
+  }
+
+  @DisallowsEDT
+  public static byte[] DisallowsEDT_s_raB()
+  {
+    record( DisallowsEDT.class, TestInvocation.STATIC, new Object[0], byte[].class );
+    return new byte[0];
+  }
+
+  @DisallowsEDT
+  public static char[] DisallowsEDT_s_raC()
+  {
+    record( DisallowsEDT.class, TestInvocation.STATIC, new Object[0], char[].class );
+    return new char[0];
+  }
+
+  @DisallowsEDT
+  public static short[] DisallowsEDT_s_raS()
+  {
+    record( DisallowsEDT.class, TestInvocation.STATIC, new Object[0], short[].class );
+    return new short[0];
+  }
+
+  @DisallowsEDT
+  public static int[] DisallowsEDT_s_raI()
+  {
+    record( DisallowsEDT.class, TestInvocation.STATIC, new Object[0], int[].class );
+    return new int[0];
+  }
+
+  @DisallowsEDT
+  public static long[] DisallowsEDT_s_raJ()
+  {
+    record( DisallowsEDT.class, TestInvocation.STATIC, new Object[0], long[].class );
+    return new long[0];
+  }
+
+  @DisallowsEDT
+  public static float[] DisallowsEDT_s_raF()
+  {
+    record( DisallowsEDT.class, TestInvocation.STATIC, new Object[0], float[].class );
+    return new float[0];
+  }
+
+  @DisallowsEDT
+  public static double[] DisallowsEDT_s_raD()
+  {
+    record( DisallowsEDT.class, TestInvocation.STATIC, new Object[0], double[].class );
+    return new double[0];
+  }
+
+  @DisallowsEDT
+  public static String[] DisallowsEDT_s_raA()
+  {
+    record( DisallowsEDT.class, TestInvocation.STATIC, new Object[0], String[].class );
+    return new String[0];
+  }
+
+  // Instance methods with return values
+
+  @DisallowsEDT
+  public boolean DisallowsEDT_i_rZ()
+  {
+    record( DisallowsEDT.class, TestInvocation.INSTANCE, new Object[0], boolean.class );
+    return true;
+  }
+
+  @DisallowsEDT
+  public byte DisallowsEDT_i_rB()
+  {
+    record( DisallowsEDT.class, TestInvocation.INSTANCE, new Object[0], byte.class );
+    return (byte) 1;
+  }
+
+  @DisallowsEDT
+  public char DisallowsEDT_i_rC()
+  {
+    record( DisallowsEDT.class, TestInvocation.INSTANCE, new Object[0], char.class );
+    return (char) 1;
+  }
+
+  @DisallowsEDT
+  public short DisallowsEDT_i_rS()
+  {
+    record( DisallowsEDT.class, TestInvocation.INSTANCE, new Object[0], short.class );
+    return (short) 1;
+  }
+
+  @DisallowsEDT
+  public int DisallowsEDT_i_rI()
+  {
+    record( DisallowsEDT.class, TestInvocation.INSTANCE, new Object[0], int.class );
+    return 1;
+  }
+
+  @DisallowsEDT
+  public long DisallowsEDT_i_rJ()
+  {
+    record( DisallowsEDT.class, TestInvocation.INSTANCE, new Object[0], long.class );
+    return 1L;
+  }
+
+  @DisallowsEDT
+  public float DisallowsEDT_i_rF()
+  {
+    record( DisallowsEDT.class, TestInvocation.INSTANCE, new Object[0], float.class );
+    return 1.0F;
+  }
+
+  @DisallowsEDT
+  public double DisallowsEDT_i_rD()
+  {
+    record( DisallowsEDT.class, TestInvocation.INSTANCE, new Object[0], double.class );
+    return 1.0D;
+  }
+
+  @DisallowsEDT
+  public String DisallowsEDT_i_rA()
+  {
+    record( DisallowsEDT.class, TestInvocation.INSTANCE, new Object[0], String.class );
+    return "";
+  }
+
+  @DisallowsEDT
+  public boolean[] DisallowsEDT_i_raZ()
+  {
+    record( DisallowsEDT.class, TestInvocation.INSTANCE, new Object[0], boolean[].class );
+    return new boolean[0];
+  }
+
+  @DisallowsEDT
+  public byte[] DisallowsEDT_i_raB()
+  {
+    record( DisallowsEDT.class, TestInvocation.INSTANCE, new Object[0], byte[].class );
+    return new byte[0];
+  }
+
+  @DisallowsEDT
+  public char[] DisallowsEDT_i_raC()
+  {
+    record( DisallowsEDT.class, TestInvocation.INSTANCE, new Object[0], char[].class );
+    return new char[0];
+  }
+
+  @DisallowsEDT
+  public short[] DisallowsEDT_i_raS()
+  {
+    record( DisallowsEDT.class, TestInvocation.INSTANCE, new Object[0], short[].class );
+    return new short[0];
+  }
+
+  @DisallowsEDT
+  public int[] DisallowsEDT_i_raI()
+  {
+    record( DisallowsEDT.class, TestInvocation.INSTANCE, new Object[0], int[].class );
+    return new int[0];
+  }
+
+  @DisallowsEDT
+  public long[] DisallowsEDT_i_raJ()
+  {
+    record( DisallowsEDT.class, TestInvocation.INSTANCE, new Object[0], long[].class );
+    return new long[0];
+  }
+
+  @DisallowsEDT
+  public float[] DisallowsEDT_i_raF()
+  {
+    record( DisallowsEDT.class, TestInvocation.INSTANCE, new Object[0], float[].class );
+    return new float[0];
+  }
+
+  @DisallowsEDT
+  public double[] DisallowsEDT_i_raD()
+  {
+    record( DisallowsEDT.class, TestInvocation.INSTANCE, new Object[0], double[].class );
+    return new double[0];
+  }
+
+  @DisallowsEDT
+  public String[] DisallowsEDT_i_raA()
+  {
+    record( DisallowsEDT.class, TestInvocation.INSTANCE, new Object[0], String[].class );
+    return new String[0];
+  }
+
 
   // Static methods for DisallowsEDT
 
@@ -578,6 +1087,260 @@ public class ClassToWeave
             Void.TYPE );
   }
 
+  @RunInEDT
+  public static boolean RunInEDT_s_rZ()
+  {
+    record( RunInEDT.class, TestInvocation.STATIC, new Object[0], boolean.class );
+    return true;
+  }
+
+  @RunInEDT
+  public static byte RunInEDT_s_rB()
+  {
+    record( RunInEDT.class, TestInvocation.STATIC, new Object[0], byte.class );
+    return (byte) 1;
+  }
+
+  @RunInEDT
+  public static char RunInEDT_s_rC()
+  {
+    record( RunInEDT.class, TestInvocation.STATIC, new Object[0], char.class );
+    return 'a';
+  }
+
+  @RunInEDT
+  public static short RunInEDT_s_rS()
+  {
+    record( RunInEDT.class, TestInvocation.STATIC, new Object[0], short.class );
+    return (short) 1;
+  }
+
+  @RunInEDT
+  public static int RunInEDT_s_rI()
+  {
+    record( RunInEDT.class, TestInvocation.STATIC, new Object[0], int.class );
+    return 1;
+  }
+
+  @RunInEDT
+  public static long RunInEDT_s_rJ()
+  {
+    record( RunInEDT.class, TestInvocation.STATIC, new Object[0], long.class );
+    return 1L;
+  }
+
+  @RunInEDT
+  public static float RunInEDT_s_rF()
+  {
+    record( RunInEDT.class, TestInvocation.STATIC, new Object[0], float.class );
+    return 1.0F;
+  }
+
+  @RunInEDT
+  public static double RunInEDT_s_rD()
+  {
+    record( RunInEDT.class, TestInvocation.STATIC, new Object[0], double.class );
+    return 1.0D;
+  }
+
+  @RunInEDT
+  public static String RunInEDT_s_rA()
+  {
+    record( RunInEDT.class, TestInvocation.STATIC, new Object[0], String.class );
+    return "";
+  }
+
+  @RunInEDT
+  public static boolean[] RunInEDT_s_raZ()
+  {
+    record( RunInEDT.class, TestInvocation.STATIC, new Object[0], boolean[].class );
+    return new boolean[0];
+  }
+
+  @RunInEDT
+  public static byte[] RunInEDT_s_raB()
+  {
+    record( RunInEDT.class, TestInvocation.STATIC, new Object[0], byte[].class );
+    return new byte[0];
+  }
+
+  @RunInEDT
+  public static char[] RunInEDT_s_raC()
+  {
+    record( RunInEDT.class, TestInvocation.STATIC, new Object[0], char[].class );
+    return new char[0];
+  }
+
+  @RunInEDT
+  public static short[] RunInEDT_s_raS()
+  {
+    record( RunInEDT.class, TestInvocation.STATIC, new Object[0], short[].class );
+    return new short[0];
+  }
+
+  @RunInEDT
+  public static int[] RunInEDT_s_raI()
+  {
+    record( RunInEDT.class, TestInvocation.STATIC, new Object[0], int[].class );
+    return new int[0];
+  }
+
+  @RunInEDT
+  public static long[] RunInEDT_s_raJ()
+  {
+    record( RunInEDT.class, TestInvocation.STATIC, new Object[0], long[].class );
+    return new long[0];
+  }
+
+  @RunInEDT
+  public static float[] RunInEDT_s_raF()
+  {
+    record( RunInEDT.class, TestInvocation.STATIC, new Object[0], float[].class );
+    return new float[0];
+  }
+
+  @RunInEDT
+  public static double[] RunInEDT_s_raD()
+  {
+    record( RunInEDT.class, TestInvocation.STATIC, new Object[0], double[].class );
+    return new double[0];
+  }
+
+  @RunInEDT
+  public static String[] RunInEDT_s_raA()
+  {
+    record( RunInEDT.class, TestInvocation.STATIC, new Object[0], String[].class );
+    return new String[0];
+  }
+
+  // Instance methods with return values
+
+  @RunInEDT
+  public boolean RunInEDT_i_rZ()
+  {
+    record( RunInEDT.class, TestInvocation.INSTANCE, new Object[0], boolean.class );
+    return true;
+  }
+
+  @RunInEDT
+  public byte RunInEDT_i_rB()
+  {
+    record( RunInEDT.class, TestInvocation.INSTANCE, new Object[0], byte.class );
+    return (byte) 1;
+  }
+
+  @RunInEDT
+  public char RunInEDT_i_rC()
+  {
+    record( RunInEDT.class, TestInvocation.INSTANCE, new Object[0], char.class );
+    return (char) 1;
+  }
+
+  @RunInEDT
+  public short RunInEDT_i_rS()
+  {
+    record( RunInEDT.class, TestInvocation.INSTANCE, new Object[0], short.class );
+    return (short) 1;
+  }
+
+  @RunInEDT
+  public int RunInEDT_i_rI()
+  {
+    record( RunInEDT.class, TestInvocation.INSTANCE, new Object[0], int.class );
+    return 1;
+  }
+
+  @RunInEDT
+  public long RunInEDT_i_rJ()
+  {
+    record( RunInEDT.class, TestInvocation.INSTANCE, new Object[0], long.class );
+    return 1L;
+  }
+
+  @RunInEDT
+  public float RunInEDT_i_rF()
+  {
+    record( RunInEDT.class, TestInvocation.INSTANCE, new Object[0], float.class );
+    return 1.0F;
+  }
+
+  @RunInEDT
+  public double RunInEDT_i_rD()
+  {
+    record( RunInEDT.class, TestInvocation.INSTANCE, new Object[0], double.class );
+    return 1.0D;
+  }
+
+  @RunInEDT
+  public String RunInEDT_i_rA()
+  {
+    record( RunInEDT.class, TestInvocation.INSTANCE, new Object[0], String.class );
+    return "";
+  }
+
+  @RunInEDT
+  public boolean[] RunInEDT_i_raZ()
+  {
+    record( RunInEDT.class, TestInvocation.INSTANCE, new Object[0], boolean[].class );
+    return new boolean[0];
+  }
+
+  @RunInEDT
+  public byte[] RunInEDT_i_raB()
+  {
+    record( RunInEDT.class, TestInvocation.INSTANCE, new Object[0], byte[].class );
+    return new byte[0];
+  }
+
+  @RunInEDT
+  public char[] RunInEDT_i_raC()
+  {
+    record( RunInEDT.class, TestInvocation.INSTANCE, new Object[0], char[].class );
+    return new char[0];
+  }
+
+  @RunInEDT
+  public short[] RunInEDT_i_raS()
+  {
+    record( RunInEDT.class, TestInvocation.INSTANCE, new Object[0], short[].class );
+    return new short[0];
+  }
+
+  @RunInEDT
+  public int[] RunInEDT_i_raI()
+  {
+    record( RunInEDT.class, TestInvocation.INSTANCE, new Object[0], int[].class );
+    return new int[0];
+  }
+
+  @RunInEDT
+  public long[] RunInEDT_i_raJ()
+  {
+    record( RunInEDT.class, TestInvocation.INSTANCE, new Object[0], long[].class );
+    return new long[0];
+  }
+
+  @RunInEDT
+  public float[] RunInEDT_i_raF()
+  {
+    record( RunInEDT.class, TestInvocation.INSTANCE, new Object[0], float[].class );
+    return new float[0];
+  }
+
+  @RunInEDT
+  public double[] RunInEDT_i_raD()
+  {
+    record( RunInEDT.class, TestInvocation.INSTANCE, new Object[0], double[].class );
+    return new double[0];
+  }
+
+  @RunInEDT
+  public String[] RunInEDT_i_raA()
+  {
+    record( RunInEDT.class, TestInvocation.INSTANCE, new Object[0], String[].class );
+    return new String[0];
+  }
+
   // Static methods for RunInEDT
 
   @RunInEDT
@@ -860,6 +1623,260 @@ public class ClassToWeave
             TestInvocation.INSTANCE,
             new Object[]{ v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18 },
             Void.TYPE );
+  }
+
+  @RunOutsideEDT
+  public static boolean RunOutsideEDT_s_rZ()
+  {
+    record( RunOutsideEDT.class, TestInvocation.STATIC, new Object[0], boolean.class );
+    return true;
+  }
+
+  @RunOutsideEDT
+  public static byte RunOutsideEDT_s_rB()
+  {
+    record( RunOutsideEDT.class, TestInvocation.STATIC, new Object[0], byte.class );
+    return (byte) 1;
+  }
+
+  @RunOutsideEDT
+  public static char RunOutsideEDT_s_rC()
+  {
+    record( RunOutsideEDT.class, TestInvocation.STATIC, new Object[0], char.class );
+    return 'a';
+  }
+
+  @RunOutsideEDT
+  public static short RunOutsideEDT_s_rS()
+  {
+    record( RunOutsideEDT.class, TestInvocation.STATIC, new Object[0], short.class );
+    return (short) 1;
+  }
+
+  @RunOutsideEDT
+  public static int RunOutsideEDT_s_rI()
+  {
+    record( RunOutsideEDT.class, TestInvocation.STATIC, new Object[0], int.class );
+    return 1;
+  }
+
+  @RunOutsideEDT
+  public static long RunOutsideEDT_s_rJ()
+  {
+    record( RunOutsideEDT.class, TestInvocation.STATIC, new Object[0], long.class );
+    return 1L;
+  }
+
+  @RunOutsideEDT
+  public static float RunOutsideEDT_s_rF()
+  {
+    record( RunOutsideEDT.class, TestInvocation.STATIC, new Object[0], float.class );
+    return 1.0F;
+  }
+
+  @RunOutsideEDT
+  public static double RunOutsideEDT_s_rD()
+  {
+    record( RunOutsideEDT.class, TestInvocation.STATIC, new Object[0], double.class );
+    return 1.0D;
+  }
+
+  @RunOutsideEDT
+  public static String RunOutsideEDT_s_rA()
+  {
+    record( RunOutsideEDT.class, TestInvocation.STATIC, new Object[0], String.class );
+    return "";
+  }
+
+  @RunOutsideEDT
+  public static boolean[] RunOutsideEDT_s_raZ()
+  {
+    record( RunOutsideEDT.class, TestInvocation.STATIC, new Object[0], boolean[].class );
+    return new boolean[0];
+  }
+
+  @RunOutsideEDT
+  public static byte[] RunOutsideEDT_s_raB()
+  {
+    record( RunOutsideEDT.class, TestInvocation.STATIC, new Object[0], byte[].class );
+    return new byte[0];
+  }
+
+  @RunOutsideEDT
+  public static char[] RunOutsideEDT_s_raC()
+  {
+    record( RunOutsideEDT.class, TestInvocation.STATIC, new Object[0], char[].class );
+    return new char[0];
+  }
+
+  @RunOutsideEDT
+  public static short[] RunOutsideEDT_s_raS()
+  {
+    record( RunOutsideEDT.class, TestInvocation.STATIC, new Object[0], short[].class );
+    return new short[0];
+  }
+
+  @RunOutsideEDT
+  public static int[] RunOutsideEDT_s_raI()
+  {
+    record( RunOutsideEDT.class, TestInvocation.STATIC, new Object[0], int[].class );
+    return new int[0];
+  }
+
+  @RunOutsideEDT
+  public static long[] RunOutsideEDT_s_raJ()
+  {
+    record( RunOutsideEDT.class, TestInvocation.STATIC, new Object[0], long[].class );
+    return new long[0];
+  }
+
+  @RunOutsideEDT
+  public static float[] RunOutsideEDT_s_raF()
+  {
+    record( RunOutsideEDT.class, TestInvocation.STATIC, new Object[0], float[].class );
+    return new float[0];
+  }
+
+  @RunOutsideEDT
+  public static double[] RunOutsideEDT_s_raD()
+  {
+    record( RunOutsideEDT.class, TestInvocation.STATIC, new Object[0], double[].class );
+    return new double[0];
+  }
+
+  @RunOutsideEDT
+  public static String[] RunOutsideEDT_s_raA()
+  {
+    record( RunOutsideEDT.class, TestInvocation.STATIC, new Object[0], String[].class );
+    return new String[0];
+  }
+
+  // Instance methods with return values
+
+  @RunOutsideEDT
+  public boolean RunOutsideEDT_i_rZ()
+  {
+    record( RunOutsideEDT.class, TestInvocation.INSTANCE, new Object[0], boolean.class );
+    return true;
+  }
+
+  @RunOutsideEDT
+  public byte RunOutsideEDT_i_rB()
+  {
+    record( RunOutsideEDT.class, TestInvocation.INSTANCE, new Object[0], byte.class );
+    return (byte) 1;
+  }
+
+  @RunOutsideEDT
+  public char RunOutsideEDT_i_rC()
+  {
+    record( RunOutsideEDT.class, TestInvocation.INSTANCE, new Object[0], char.class );
+    return (char) 1;
+  }
+
+  @RunOutsideEDT
+  public short RunOutsideEDT_i_rS()
+  {
+    record( RunOutsideEDT.class, TestInvocation.INSTANCE, new Object[0], short.class );
+    return (short) 1;
+  }
+
+  @RunOutsideEDT
+  public int RunOutsideEDT_i_rI()
+  {
+    record( RunOutsideEDT.class, TestInvocation.INSTANCE, new Object[0], int.class );
+    return 1;
+  }
+
+  @RunOutsideEDT
+  public long RunOutsideEDT_i_rJ()
+  {
+    record( RunOutsideEDT.class, TestInvocation.INSTANCE, new Object[0], long.class );
+    return 1L;
+  }
+
+  @RunOutsideEDT
+  public float RunOutsideEDT_i_rF()
+  {
+    record( RunOutsideEDT.class, TestInvocation.INSTANCE, new Object[0], float.class );
+    return 1.0F;
+  }
+
+  @RunOutsideEDT
+  public double RunOutsideEDT_i_rD()
+  {
+    record( RunOutsideEDT.class, TestInvocation.INSTANCE, new Object[0], double.class );
+    return 1.0D;
+  }
+
+  @RunOutsideEDT
+  public String RunOutsideEDT_i_rA()
+  {
+    record( RunOutsideEDT.class, TestInvocation.INSTANCE, new Object[0], String.class );
+    return "";
+  }
+
+  @RunOutsideEDT
+  public boolean[] RunOutsideEDT_i_raZ()
+  {
+    record( RunOutsideEDT.class, TestInvocation.INSTANCE, new Object[0], boolean[].class );
+    return new boolean[0];
+  }
+
+  @RunOutsideEDT
+  public byte[] RunOutsideEDT_i_raB()
+  {
+    record( RunOutsideEDT.class, TestInvocation.INSTANCE, new Object[0], byte[].class );
+    return new byte[0];
+  }
+
+  @RunOutsideEDT
+  public char[] RunOutsideEDT_i_raC()
+  {
+    record( RunOutsideEDT.class, TestInvocation.INSTANCE, new Object[0], char[].class );
+    return new char[0];
+  }
+
+  @RunOutsideEDT
+  public short[] RunOutsideEDT_i_raS()
+  {
+    record( RunOutsideEDT.class, TestInvocation.INSTANCE, new Object[0], short[].class );
+    return new short[0];
+  }
+
+  @RunOutsideEDT
+  public int[] RunOutsideEDT_i_raI()
+  {
+    record( RunOutsideEDT.class, TestInvocation.INSTANCE, new Object[0], int[].class );
+    return new int[0];
+  }
+
+  @RunOutsideEDT
+  public long[] RunOutsideEDT_i_raJ()
+  {
+    record( RunOutsideEDT.class, TestInvocation.INSTANCE, new Object[0], long[].class );
+    return new long[0];
+  }
+
+  @RunOutsideEDT
+  public float[] RunOutsideEDT_i_raF()
+  {
+    record( RunOutsideEDT.class, TestInvocation.INSTANCE, new Object[0], float[].class );
+    return new float[0];
+  }
+
+  @RunOutsideEDT
+  public double[] RunOutsideEDT_i_raD()
+  {
+    record( RunOutsideEDT.class, TestInvocation.INSTANCE, new Object[0], double[].class );
+    return new double[0];
+  }
+
+  @RunOutsideEDT
+  public String[] RunOutsideEDT_i_raA()
+  {
+    record( RunOutsideEDT.class, TestInvocation.INSTANCE, new Object[0], String[].class );
+    return new String[0];
   }
 
   // Static methods for RunOutsideEDT
