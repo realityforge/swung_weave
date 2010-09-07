@@ -57,3 +57,10 @@ define_with_central_layout("swung-weave", true, false) do
   end
 
 end
+
+namespace :deploy do
+  task :tag do
+    system("git tag -a #{VERSION_NUMBER} -m 'Released #{VERSION_NUMBER}'")
+    puts "Tagged locally.  `git push --tags` if you're sure."
+  end
+end
