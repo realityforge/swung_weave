@@ -25,7 +25,8 @@ module Buildr
       def requires
         [
           self.api_artifact,
-          "org.realityforge:swung-weave-tool:jar:#{VERSION}", ASM_ARTIFACT
+          "org.realityforge:swung-weave-tool:jar:#{VERSION}",
+          ASM_ARTIFACT
         ]
       end
     end
