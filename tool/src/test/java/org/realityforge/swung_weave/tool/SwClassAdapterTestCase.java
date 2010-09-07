@@ -37,6 +37,7 @@ public class SwClassAdapterTestCase
     classData.putAll( adapter.getClassData() );
     classData.put( classname, cw.toByteArray() );
 
+    //noinspection ConstantIfStatement
     if ( false )
     {
       for ( final Map.Entry<String, byte[]> entry : classData.entrySet() )
