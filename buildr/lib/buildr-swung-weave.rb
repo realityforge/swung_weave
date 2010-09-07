@@ -1,12 +1,13 @@
 require 'buildr'
 require 'buildr/java'
+require 'buildr/swung_weave/version'
 
 module Buildr
   module SwungWeave
     class << self
 
       def api_artifact
-        "org.realityforge:swung-weave-api:jar:#{Buildr::SwungWeave::Version::STRING}"
+        "org.realityforge:swung-weave-api:jar:#{VERSION}"
       end
 
       def enhance(dir)
@@ -24,8 +25,7 @@ module Buildr
       def requires
         [
           self.api_artifact,
-          "org.realityforge:swung-weave-tool:jar:#{Buildr::SwungWeave::Version::STRING}",
-          'asm:asm-all:jar:3.3'
+          "org.realityforge:swung-weave-tool:jar:#{VERSION}", ASM_ARTIFACT
         ]
       end
     end

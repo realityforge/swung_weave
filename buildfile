@@ -58,6 +58,22 @@ define_with_central_layout("swung-weave", true, false) do
 
   desc "SwingWeave: Buildr extension"
   define_with_central_layout "buildr" do
+
+    generated_file = _(:target, :generated, "version.rb")
+    file(generated_file) do
+      mkdir_p File.dirname(generated_file)
+      File.open(generated_file, "wb") do |f|
+        f.write <<TEXT
+module Buildr
+  module SwungWeave
+    private
+      VERSION="#{VERSION}"
+      ASM_ARTIFACT="#{ASM}"    
+  end
+end
+TEXT
+      end
+    end
     package(:gem).tap do |gem|
       gem.spec do |spec|
         spec.authors        = ['Peter Donald']
@@ -74,7 +90,9 @@ TEXT
         spec.has_rdoc         = false
       end
       gem.include :from => _("lib"), :path => "lib"
-      gem.include ['LICENSE', 'README.rdoc', 'NOTICE'] 
+      gem.include ['LICENSE', 'README.rdoc', 'NOTICE']
+      gem.include generated_file, :as => "lib/buildr/swung_weave/version.rb"
+      gem.prerequisites << generated_file
     end
   end
 end
