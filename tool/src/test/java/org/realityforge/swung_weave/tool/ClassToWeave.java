@@ -9,7 +9,7 @@ import org.testng.Assert;
 
 @SuppressWarnings( { "UnusedDeclaration" } )
 public class ClassToWeave
-{
+{                                             
   @RequiresEDT
   public static boolean RequiresEDT_s_rZ()
   {
