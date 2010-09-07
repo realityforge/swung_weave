@@ -67,7 +67,7 @@ define_with_central_layout("swung-weave", true, false) do
 module Buildr
   module SwungWeave
     private
-      VERSION="#{VERSION}"
+      VERSION="#{VERSION_NUMBER}"
       ASM_ARTIFACT="#{ASM}"    
   end
 end
