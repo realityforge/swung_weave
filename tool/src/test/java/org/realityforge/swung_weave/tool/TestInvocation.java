@@ -17,6 +17,7 @@ public final class TestInvocation
   public final int methodType;
   public final boolean inEDT;
   public final Object[] parameters;
+  public final Class<?> returnType;
   public final boolean expectedInEDT;
   final Class<? extends Throwable> expectedExceptionType;
   final String expectedExceptionMessage;
@@ -39,6 +40,7 @@ public final class TestInvocation
                   final int methodType,
                   final boolean inEDT,
                   final Object[] parameters,
+                  final Class<?> returnType,
                   final boolean expectedInEDT,
                   final Class<? extends Throwable> expectedExceptionType,
                   final String expectedExceptionMessage )
@@ -47,6 +49,7 @@ public final class TestInvocation
     this.methodType = methodType;
     this.inEDT = inEDT;
     this.parameters = parameters;
+    this.returnType = returnType;
     this.expectedInEDT = expectedInEDT;
     this.expectedExceptionType = expectedExceptionType;
     this.expectedExceptionMessage = expectedExceptionMessage;
@@ -64,7 +67,8 @@ public final class TestInvocation
       if( sb.length() == 0 ) sb.append( '_' );
       sb.append( encodingForType( parameterType ) );
     }
-    return shortAnnotationName + "_" + methodTypeSuffix + sb;
+    final String returnTypeSuffix = returnType == Void.TYPE ? "" : "_r" + encodingForType( returnType );
+    return shortAnnotationName + "_" + methodTypeSuffix + sb + returnTypeSuffix;
   }
 
   Class<?>[] getParameterTypes()
