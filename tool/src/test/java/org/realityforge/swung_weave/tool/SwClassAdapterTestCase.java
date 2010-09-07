@@ -37,9 +37,9 @@ public class SwClassAdapterTestCase
     classData.putAll( adapter.getClassData() );
     classData.put( classname, cw.toByteArray() );
 
-    if( false )
+    if ( false )
     {
-      for( final Map.Entry<String, byte[]> entry : classData.entrySet() )
+      for ( final Map.Entry<String, byte[]> entry : classData.entrySet() )
       {
         final String baseDir = "target/sw/";
         final File file = new File( baseDir + entry.getKey().replace( '.', '/' ) + ".class" );
@@ -57,11 +57,11 @@ public class SwClassAdapterTestCase
         throws ClassNotFoundException
       {
         final byte[] data = classData.get( name );
-        if( null != data )
+        if ( null != data )
         {
           return defineClass( name, data, 0, data.length );
         }
-        else if( TestInvocation.class.getName().equals( name ) )
+        else if ( TestInvocation.class.getName().equals( name ) )
         {
           return TestInvocation.class;
         }
@@ -77,7 +77,7 @@ public class SwClassAdapterTestCase
   public void verifySwClassAdapterBehaviour( final TestInvocation invocation )
     throws Throwable
   {
-    if( invocation.inEDT )
+    if ( invocation.inEDT )
     {
       try
       {
@@ -90,7 +90,7 @@ public class SwClassAdapterTestCase
           }
         } );
       }
-      catch( final InvocationTargetException ite )
+      catch ( final InvocationTargetException ite )
       {
         throw ite.getCause();
       }
@@ -111,7 +111,7 @@ public class SwClassAdapterTestCase
       final Method method = c_clazz.getDeclaredMethod( methodName, invocation.getParameterTypes() );
       method.setAccessible( true );
       final Object instance;
-      if( invocation.methodType == TestInvocation.INSTANCE )
+      if ( invocation.methodType == TestInvocation.INSTANCE )
       {
         instance = c_clazz.newInstance();
       }
@@ -122,15 +122,15 @@ public class SwClassAdapterTestCase
       method.invoke( instance, invocation.parameters );
       completed = true;
     }
-    catch( final InvocationTargetException e )
+    catch ( final InvocationTargetException e )
     {
       invocation.assertMatchesException( e.getCause() );
     }
-    catch( final Throwable t )
+    catch ( final Throwable t )
     {
       invocation.assertMatchesException( t );
     }
-    if( completed )
+    if ( completed )
     {
       Assert.assertTrue( invocation.isInvoked(), "invocation.isInvoked()" );
     }
@@ -145,36 +145,36 @@ public class SwClassAdapterTestCase
       {
         new Object[]{ },
         new Object[]{ true },
-        new Object[]{ (byte)1 },
+        new Object[]{ (byte) 1 },
         new Object[]{ 'a' },
-        new Object[]{ (short)2 },
+        new Object[]{ (short) 2 },
         new Object[]{ 3 },
         new Object[]{ 4L },
         new Object[]{ 5F },
         new Object[]{ 6D },
         new Object[]{ "Hello" },
         new Object[]{ new boolean[]{ true } },
-        new Object[]{ new byte[]{ (byte)1 } },
+        new Object[]{ new byte[]{ (byte) 1 } },
         new Object[]{ new char[]{ 'a' } },
-        new Object[]{ new short[]{ (short)2 } },
+        new Object[]{ new short[]{ (short) 2 } },
         new Object[]{ new int[]{ 3 } },
         new Object[]{ new long[]{ 4L } },
         new Object[]{ new float[]{ 5F } },
         new Object[]{ new double[]{ 6D } },
         new Object[]{ new String[]{ "Hello" } },
         new Object[]{ true,
-                      (byte)1,
+                      (byte) 1,
                       'a',
-                      (short)2,
+                      (short) 2,
                       3,
                       4L,
                       5F,
                       6D,
                       "Hello",
                       new boolean[]{ true },
-                      new byte[]{ (byte)1 },
+                      new byte[]{ (byte) 1 },
                       new char[]{ 'a' },
-                      new short[]{ (short)2 },
+                      new short[]{ (short) 2 },
                       new int[]{ 3 },
                       new long[]{ 4L },
                       new float[]{ 5F },
@@ -182,30 +182,61 @@ public class SwClassAdapterTestCase
                       new String[]{ "Hello" } },
       };
 
-    for( final Object[] parameters : parameterSets )
+    for ( final Object[] parameters : parameterSets )
     {
-      addTestSet( tests, TestInvocation.STATIC, parameters );
-      addTestSet( tests, TestInvocation.INSTANCE, parameters );
+      addTestSet( tests, TestInvocation.STATIC, parameters, Void.TYPE );
+      addTestSet( tests, TestInvocation.INSTANCE, parameters, Void.TYPE );
+    }
+
+    final Class<?>[] returnTypes =
+      {
+        boolean.class,
+        byte.class,
+        char.class,
+        short.class,
+        int.class,
+        long.class,
+        float.class,
+        double.class,
+        String.class,
+        boolean[].class,
+        byte[].class,
+        char[].class,
+        short[].class,
+        int[].class,
+        long[].class,
+        float[].class,
+        double[].class,
+        String[].class,
+      };
+
+    for ( final Class<?> returnType : returnTypes )
+    {
+      addTestSet( tests, TestInvocation.STATIC, new Object[0], returnType );
+      addTestSet( tests, TestInvocation.INSTANCE, new Object[0], returnType );
     }
 
     final Object[][] results = new Object[tests.size()][];
-    for( int i = 0; i < results.length; i++ )
+    for ( int i = 0; i < results.length; i++ )
     {
-      results[i] = new Object[]{ tests.get( i ) };
+      results[ i ] = new Object[]{ tests.get( i ) };
     }
     return results;
   }
 
-  private void addTestSet( final ArrayList<TestInvocation> tests, final int methodType, final Object[] parameters )
+  private void addTestSet( final ArrayList<TestInvocation> tests,
+                           final int methodType,
+                           final Object[] parameters,
+                           final Class<?> returnType )
   {
-    failInEDT( tests, DisallowsEDT.class, methodType, parameters );
-    succeed( tests, DisallowsEDT.class, methodType, false, parameters, false );
-    failOutsideEDT( tests, RequiresEDT.class, methodType, parameters );
-    succeed( tests, RequiresEDT.class, methodType, true, parameters, true );
-    succeed( tests, RunInEDT.class, methodType, true, parameters, true );
-    succeed( tests, RunInEDT.class, methodType, false, parameters, true );
-    succeed( tests, RunOutsideEDT.class, methodType, true, parameters, false );
-    succeed( tests, RunOutsideEDT.class, methodType, false, parameters, false );
+    failInEDT( tests, DisallowsEDT.class, methodType, parameters, returnType );
+    succeed( tests, DisallowsEDT.class, methodType, false, parameters, false, returnType );
+    failOutsideEDT( tests, RequiresEDT.class, methodType, parameters, returnType );
+    succeed( tests, RequiresEDT.class, methodType, true, parameters, true, returnType );
+    succeed( tests, RunInEDT.class, methodType, true, parameters, true, returnType );
+    succeed( tests, RunInEDT.class, methodType, false, parameters, true, returnType );
+    succeed( tests, RunOutsideEDT.class, methodType, true, parameters, false, returnType );
+    succeed( tests, RunOutsideEDT.class, methodType, false, parameters, false, returnType );
   }
 
   private static void succeed( final ArrayList<TestInvocation> tests,
@@ -213,31 +244,34 @@ public class SwClassAdapterTestCase
                                final int methodType,
                                final boolean inEDT,
                                final Object[] parameters,
-                               final boolean expectedInEDT )
+                               final boolean expectedInEDT,
+                               final Class<?> returnType )
   {
-    ti( tests, annotation, methodType, inEDT, parameters, expectedInEDT, null, null );
+    ti( tests, annotation, methodType, inEDT, parameters, expectedInEDT, null, null, returnType );
   }
 
   private static void failInEDT( final ArrayList<TestInvocation> tests,
                                  final Class<?> annotation,
                                  final int methodType,
-                                 final Object[] parameters )
+                                 final Object[] parameters,
+                                 final Class<?> returnType )
   {
 
     final String message =
       "Method " + TestInvocation.METHOD_NAME + " must only be invoked in the Event Dispatch Thread.";
-    ti( tests, annotation, methodType, true, parameters, true, IllegalStateException.class, message );
+    ti( tests, annotation, methodType, true, parameters, true, IllegalStateException.class, message, returnType );
   }
 
   private static void failOutsideEDT( final ArrayList<TestInvocation> tests,
                                       final Class<?> annotation,
                                       final int methodType,
-                                      final Object[] parameters )
+                                      final Object[] parameters,
+                                      final Class<?> returnType )
   {
 
     final String message =
       "Method " + TestInvocation.METHOD_NAME + " must not be invoked in the Event Dispatch Thread.";
-    ti( tests, annotation, methodType, false, parameters, false, IllegalStateException.class, message );
+    ti( tests, annotation, methodType, false, parameters, false, IllegalStateException.class, message, returnType );
   }
 
   private static void ti( final ArrayList<TestInvocation> tests,
@@ -247,12 +281,14 @@ public class SwClassAdapterTestCase
                           final Object[] parameters,
                           final boolean expectedInEDT,
                           final Class<? extends Throwable> expectedExceptionType,
-                          final String expectedExceptionMessage )
+                          final String expectedExceptionMessage,
+                          final Class<?> returnType )
   {
     tests.add( new TestInvocation( annotation,
                                    methodType,
                                    inEDT,
                                    parameters,
+                                   returnType,
                                    expectedInEDT,
                                    expectedExceptionType,
                                    expectedExceptionMessage ) );
