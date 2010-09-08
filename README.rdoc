@@ -20,5 +20,3 @@ A method annotated with @RunInEDT may be transformed into something like
 * May need to write an IDEA plugin if we want the code to be post-processed from
   within the IDE. Alternatively write a buildr extension to IDEA and build it via
   that.
-* Add buildr extension  that is non unlike the openjpa plugin that post-prcesses
-  bytecode
