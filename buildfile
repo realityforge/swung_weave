@@ -1,6 +1,3 @@
-gem 'buildr-bnd', :version => '0.0.5'
-gem 'buildr-iidea', :version => '0.0.8'
-
 VERSION_NUMBER = "1.0.0"
 GROUP = "org.realityforge"
 
