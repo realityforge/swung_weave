@@ -4,10 +4,6 @@ GROUP = "org.realityforge"
 require 'buildr_bnd'
 require 'buildr_iidea'
 
-repositories.remote << 'https://repository.apache.org/content/repositories/releases'
-repositories.remote << 'http://repository.springsource.com/maven/bundles/external'
-repositories.remote << 'http://repository.code-house.org/content/repositories/release' # OSGi - jmx RI
-
 repositories.remote << Buildr::Bnd.remote_repository
 
 ASM = 'asm:asm-all:jar:3.3'
@@ -65,7 +61,7 @@ module Buildr
   module SwungWeave
     private
       VERSION="#{VERSION_NUMBER}"
-      ASM_ARTIFACT="#{ASM}"    
+      ASM_ARTIFACT="#{ASM}"
   end
 end
 TEXT
