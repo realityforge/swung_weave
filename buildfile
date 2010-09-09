@@ -1,5 +1,5 @@
 VERSION_NUMBER = "1.0.0"
-GROUP = "org.realityforge"
+GROUP = "org.realityforge.swung-weave"
 
 require 'buildr_bnd'
 require 'buildr_iidea'
