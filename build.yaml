@@ -2,8 +2,6 @@ gems:
   - buildr-bnd = 0.0.5
   - buildr-iidea = 0.0.9
 
-remote:
- - http://www.stocksoftware.com.au/repositories/external
-
-relase_to:
-  url: sftp://www.stocksoftware.com.au/www/stocksoftware/web/repositories/releases
+repositories:
+  remote:
+    - http://www.stocksoftware.com.au/repositories/external

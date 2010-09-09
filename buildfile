@@ -4,6 +4,11 @@ GROUP = "org.realityforge"
 require 'buildr_bnd'
 require 'buildr_iidea'
 
+repositories.release_to = {
+  :url => "sftp://www.stocksoftware.com.au/www/stocksoftware/web/repositories/releases",
+  :username => ENV["RELEASE_USER"]
+}
+
 repositories.remote << Buildr::Bnd.remote_repository
 
 ASM = 'asm:asm-all:jar:3.3'
