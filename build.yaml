@@ -1,8 +1,14 @@
 gems:
-  #- ci_reporter
   - buildr-bnd = 0.0.5
   - buildr-iidea = 0.0.9
+<<<<<<< HEAD:build.yaml
 remote:
  - http://www.stocksoftware.com.au/repositories/external
 relase_to:
   url: sftp://www.stocksoftware.com.au/www/stocksoftware/web/repositories/external
+=======
+
+repositories:
+  remote:
+    - http://www.stocksoftware.com.au/repositories/external
+>>>>>>> 22f749e0e168dc74e40a505a7adf37547abf4bb6:build.yaml

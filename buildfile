@@ -1,8 +1,12 @@
 VERSION_NUMBER = "1.0.0"
-GROUP = "org.realityforge"
+GROUP = "org.realityforge.swung-weave"
 
 require 'buildr_bnd'
 require 'buildr_iidea'
+
+repositories.release_to = {
+  :url => "sftp://www.stocksoftware.com.au/www/stocksoftware/web/repositories/releases",
+  :username => ENV["RELEASE_USER"]
 
 repositories.remote << Buildr::Bnd.remote_repository
 

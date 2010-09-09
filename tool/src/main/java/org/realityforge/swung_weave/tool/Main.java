@@ -26,7 +26,7 @@ public class Main
   private String _baseDir = "";
   private boolean _error;
 
-  public static void main( String[] args )
+  public static void main( final String[] args )
   {
     final ConsoleHandler handler = new ConsoleHandler();
     handler.setLevel( Level.ALL );
