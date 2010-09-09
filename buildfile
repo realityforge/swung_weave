@@ -1,15 +1,8 @@
-gem 'buildr-bnd', :version => '0.0.5'
-gem 'buildr-iidea', :version => '0.0.8'
-
 VERSION_NUMBER = "1.0.0"
 GROUP = "org.realityforge"
 
 require 'buildr_bnd'
 require 'buildr_iidea'
-
-repositories.remote << 'https://repository.apache.org/content/repositories/releases'
-repositories.remote << 'http://repository.springsource.com/maven/bundles/external'
-repositories.remote << 'http://repository.code-house.org/content/repositories/release' # OSGi - jmx RI
 
 repositories.remote << Buildr::Bnd.remote_repository
 

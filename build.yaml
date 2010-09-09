@@ -1,0 +1,3 @@
+gems:
+  - buildr-bnd = 0.0.5
+  - buildr-iidea = 0.0.9
