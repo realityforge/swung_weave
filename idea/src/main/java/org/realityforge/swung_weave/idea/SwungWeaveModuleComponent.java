@@ -1,20 +1,11 @@
-/*
- * User: behrangsa
- * Date: 10/09/2010
- * Time: 3:59:44 PM 
- */
 package org.realityforge.swung_weave.idea;
 
-import com.intellij.openapi.application.Application;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.compiler.CompileContext;
 import com.intellij.openapi.compiler.CompileTask;
 import com.intellij.openapi.compiler.CompilerManager;
-import com.intellij.openapi.module.ModuleComponent;
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleComponent;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.vfs.VirtualFile;
 import java.io.File;
 import java.util.ArrayList;
@@ -23,11 +14,9 @@ import org.jetbrains.annotations.NotNull;
 import org.realityforge.swung_weave.tool.Main;
 
 /**
- * This component enhances Swinkar annotated classes appropriately. The enhancement operation
- * is done after regular compilation of Java classes. The enhanced version of the classes overwrite
- * the original version of classes.
- *
- * @author Behrang Saeedzadeh
+ * This component enhances SwungWeave annotated classes appropriately. The enhancement operation
+ * is done after regular compilation of Java classes. The enhanced version of the classes
+ * overwrite the original version of classes.
  */
 public class SwungWeaveModuleComponent
   implements ModuleComponent
@@ -74,18 +63,20 @@ public class SwungWeaveModuleComponent
     {
       @Override
       public boolean execute( final CompileContext compileContext )
-      {        
+      {
         final VirtualFile outputDir = compileContext.getModuleOutputDirectory( _module );
-        final String baseDir = outputDir.getPath();
-        final List<String> classFileNames = new ArrayList<String>();
-        collectClassFileNames( classFileNames, baseDir );
+        if( null != outputDir )
+        {
+          final String baseDir = outputDir.getPath();
+          final List<String> classFileNames = new ArrayList<String>();
+          collectClassFileNames( classFileNames, baseDir );
 
-        final List<String> args = new ArrayList<String>();
-        args.add("-d");
-        args.add(baseDir);
-        args.addAll( classFileNames );       
-        Main.main( args.toArray( new String[0] ) );
-
+          final List<String> args = new ArrayList<String>();
+          args.add( "-d" );
+          args.add( baseDir );
+          args.addAll( classFileNames );
+          Main.main( args.toArray( new String[0] ) );
+        }
         return true;
       }
     } );
@@ -101,20 +92,19 @@ public class SwungWeaveModuleComponent
   private void collectClassFileNames( List<String> classFileNames, final String baseDir )
   {
     final File dir = new File( baseDir );
-    for ( File file : dir.listFiles() )
+    for( File file : dir.listFiles() )
     {
-      if ( file.isDirectory() )
+      if( file.isDirectory() )
       {
         collectClassFileNames( classFileNames, file.getAbsolutePath() );
       }
       else
       {
-        if ( file.getName().endsWith( ".class" ) )
+        if( file.getName().endsWith( ".class" ) )
         {
           classFileNames.add( file.getAbsolutePath() );
         }
       }
     }
   }
-
 }
