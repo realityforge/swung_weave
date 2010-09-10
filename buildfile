@@ -68,7 +68,7 @@ module Buildr
   module SwungWeave
     private
       VERSION="#{VERSION_NUMBER}"
-      ASM_ARTIFACT="#{ASM}"    
+      ASM_ARTIFACT="#{ASM}"
   end
 end
 TEXT
