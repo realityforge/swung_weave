@@ -8,6 +8,8 @@
     </content>
     <orderEntry type="jdk" jdkName="IDEA IU-95.429" jdkType="IDEA JDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="swung-weave" exported="" />
+    <orderEntry type="module" module-name="tool" exported="" />
   </component>
 </module>
 
