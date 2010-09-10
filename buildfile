@@ -36,6 +36,8 @@ define_with_central_layout("swung-weave", true, false) do
   project.version = VERSION_NUMBER
   project.group = GROUP
 
+  ipr.extra_modules << 'idea/idea.iml'
+
   desc "SwingWeave: API and Annotations"
   define_with_central_layout "api" do
     test.using :testng
