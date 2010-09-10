@@ -2,7 +2,7 @@
 <idea-plugin version="2">
   <name>SwungWeave</name>
   <description>SwungWeave: Bytecode weaver to simplify Swing UI code</description>
-  <version>1.0.0</version>
+  <version>1.0.5</version>
   <vendor>RealityForge.org</vendor>
   <idea-version since-build="8000"/>
 
@@ -14,6 +14,12 @@
       <implementation-class>org.realityforge.swung_weave.idea.SwungWeaveProjectComponent</implementation-class>
     </component>
   </project-components>
+
+  <module-components>
+    <component>
+      <implementation-class>org.realityforge.swung_weave.idea.SwungWeaveModuleComponent</implementation-class>
+    </component>
+  </module-components>
 
   <actions>
   </actions>
