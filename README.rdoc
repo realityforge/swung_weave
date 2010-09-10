@@ -22,3 +22,5 @@ A method annotated with @RunInEDT may be transformed into something like
   that.
 * Add buildr extension  that is non unlike the openjpa plugin that post-prcesses
   bytecode
+* Consider uploading gem to our local repo and installing via something like;
+    gem source --add http://www.stocksoftware.com.au/repositories/external
