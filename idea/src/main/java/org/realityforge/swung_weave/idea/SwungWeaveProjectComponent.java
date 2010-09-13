@@ -8,6 +8,8 @@ import org.jetbrains.annotations.NotNull;
 public class SwungWeaveProjectComponent
   implements ProjectComponent
 {
+  private static final String COMPONENT_NAME = "SwungWeave Enhancer";
+
   public SwungWeaveProjectComponent( final Project project )
   {
   }
@@ -24,7 +26,7 @@ public class SwungWeaveProjectComponent
   @NotNull
   public String getComponentName()
   {
-    return "SwungWeave Enhancer";
+    return COMPONENT_NAME;
   }
 
   public void projectOpened()
