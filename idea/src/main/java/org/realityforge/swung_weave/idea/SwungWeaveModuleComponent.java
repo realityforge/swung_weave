@@ -8,7 +8,6 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleComponent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootsTraversing;
-import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.PathsList;
 import com.intellij.util.lang.UrlClassLoader;
@@ -183,32 +182,31 @@ public class SwungWeaveModuleComponent
    * not actually delegate to the classloader of this class,
    * non-bootstrap instances cannot be shared between instances from
    * the classloader returned by this call and the current instance.</p>
-   *
+   * <p/>
    * (Note: this method is copied from the OpenJPA project with some minor modifications.)
    */
   private ClassLoader newClassLoader( final CompileContext context, final Module module )
     throws IOException
   {
-    Collection<URL> urls = new LinkedList<URL>();
+    final Collection<URL> urls = new LinkedList<URL>();
 
-    UrlClassLoader loader =
+    final UrlClassLoader loader =
       (UrlClassLoader) getClass().getClassLoader();
     urls.addAll( loader.getUrls() );
 
-    for ( VirtualFile vf : context.getAllOutputDirectories() )
+    for ( final VirtualFile vf : context.getAllOutputDirectories() )
     {
-      urls.add( new File( vf.getPath() ).getCanonicalFile().toURL() );
+      urls.add( new File( vf.getPath() ).getCanonicalFile().toURI().toURL() );
     }
 
-    PathsList paths = ProjectRootsTraversing.collectRoots( module,
+    final PathsList paths = ProjectRootsTraversing.collectRoots( module,
                                                            ProjectRootsTraversing.PROJECT_LIBRARIES );
     for ( VirtualFile vf : paths.getVirtualFiles() )
     {
-      File f = new File( vf.getPath() );
-      urls.add( f.toURL() );
+      final File f = new File( vf.getPath() );
+      urls.add( f.toURI().toURL() );
     }
 
-    return new URLClassLoader(
-      (URL[]) urls.toArray( new URL[urls.size()] ) );
+    return new URLClassLoader( urls.toArray( new URL[urls.size()] ) );
   }
 }
