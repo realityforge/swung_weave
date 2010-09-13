@@ -189,7 +189,7 @@ public class SwungWeaveModuleComponent
   private ClassLoader newClassLoader( final CompileContext context, final Module module )
     throws IOException
   {
-    Collection urls = new LinkedList();
+    Collection<URL> urls = new LinkedList<URL>();
 
     UrlClassLoader loader =
       (UrlClassLoader) getClass().getClassLoader();
