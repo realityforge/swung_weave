@@ -14,6 +14,18 @@ A method annotated with @RunInEDT may be transformed into something like
      // do method code here, guaranteed to be in EDT
   }
 
+= Installing the IDEA plugin
+
+The plugin is available in JetBrains repos. To install, simply go to
+"File > Settings > Plugins > Available" and select the SwungWeave plugin from the list
+of available plugins and install it.
+
+== How it works
+
+For each module of the project, the plugin looks for a class named org.realityforge.swung_weave.tool.Main in
+its classpath. If found, it scans all the classes of the project in its output directories and enhances the
+annotated methods using it.
+
 == TODO
 
 * Add automatable tests for DispatchUtil 
