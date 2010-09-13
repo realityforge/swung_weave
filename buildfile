@@ -11,11 +11,6 @@ repositories.release_to = {
 
 repositories.remote << Buildr::Bnd.remote_repository
 
-ASM = 'asm:asm-all:jar:3.3'
-                                               
-artifact('asm:asm-all:jar:3.3').from(File.dirname(__FILE__) + "/repository/asm/asm-all/3.3/asm-all-3.3.jar")
-artifact('asm:asm-all:jar:sources:3.3').from(File.dirname(__FILE__) + "/repository/asm/asm-all/3.3/asm-all-3.3-sources.jar")
-
 class CentralLayout < Layout::Default
   def initialize(key, top_level, use_subdir)
     super()
@@ -48,7 +43,7 @@ define_with_central_layout("swung-weave", true, false) do
 
   desc "SwingWeave: Bytecode weaver tool"
   define_with_central_layout "tool" do
-    compile.with ASM, projects('api')
+    compile.with :asm, projects('api')
     test.using :testng
     package(:bundle).tap do |bnd|
       bnd['Export-Package'] = "org.realityforge.swung_weave.tool.*;version=#{version}"
@@ -68,7 +63,7 @@ module Buildr
   module SwungWeave
     private
       VERSION="#{VERSION_NUMBER}"
-      ASM_ARTIFACT="#{ASM}"
+      ASM_ARTIFACT="#{:asm}"
   end
 end
 TEXT

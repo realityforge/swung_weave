@@ -5,3 +5,6 @@ gems:
 repositories:
   remote:
     - http://www.stocksoftware.com.au/repositories/external
+
+artifacts:
+  asm: asm:asm-all:jar:3.3
