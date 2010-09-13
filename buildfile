@@ -11,6 +11,8 @@ repositories.release_to = {
 
 repositories.remote << Buildr::Bnd.remote_repository
 
+OPENAPI = group('openapi', 'idea', 'idea_rt', 'util', 'extensions', 'annotations', :under => 'com.intellij', :version => '9.0.3')
+
 class CentralLayout < Layout::Default
   def initialize(key, top_level, use_subdir)
     super()
@@ -22,8 +24,8 @@ class CentralLayout < Layout::Default
   end
 end
 
-def define_with_central_layout(name, top_level = false, use_subdir = true, & block)
-  define(name, :layout => CentralLayout.new(name, top_level, use_subdir), & block)
+def define_with_central_layout(name, top_level = false, use_subdir = true, options = {}, & block)
+  define(name, {:layout => CentralLayout.new(name, top_level, use_subdir)}.update(options), & block)
 end
 
 desc 'SwungWeave: Bytecode weaver to simplify Swing UI code'
@@ -49,6 +51,14 @@ define_with_central_layout("swung-weave", true, false) do
       bnd['Export-Package'] = "org.realityforge.swung_weave.tool.*;version=#{version}"
       bnd['Private-Package'] = "org.objectweb.asm.*"
     end
+  end
+
+  desc "SwingWeave: IntelliJ IDEA plugin"
+  define "idea-plugin", :base_dir => 'idea', :layout => CentralLayout.new('idea-plugin', false, true) do
+    compile.with OPENAPI, projects('tool')
+    project.version = '1.0.6'
+    test.using :testng
+    package(:jar).include _('META-INF')
   end
 
   desc "SwingWeave: Buildr extension"
