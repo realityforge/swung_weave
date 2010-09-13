@@ -64,6 +64,7 @@ module Buildr
     private
       VERSION="#{VERSION_NUMBER}"
       ASM_ARTIFACT="#{:asm}"
+      GROUP="#{GROUP}"
   end
 end
 TEXT
