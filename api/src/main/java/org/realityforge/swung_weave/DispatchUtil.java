@@ -68,7 +68,7 @@ public class DispatchUtil
   {
     if ( !EventQueue.isDispatchThread() )
     {
-      throw new IllegalStateException( "Should not be calling invokeOutsideEDT from EDT" );
+      throw new IllegalStateException( "Should not be calling invokeOutsideEDT when not in EDT" );
     }
     try
     {
