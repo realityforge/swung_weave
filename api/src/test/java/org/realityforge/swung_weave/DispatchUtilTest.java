@@ -1,52 +1,202 @@
 package org.realityforge.swung_weave;
 
-import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.concurrent.Callable;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+import org.testng.Assert;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
 
 public class DispatchUtilTest
 {
-  public static void main( String[] args )
+  CollectingEDTViolationListener _listener;
+  boolean _invoked;
+
+  @BeforeTest
+  public void installListener()
   {
-    final JFrame frame = new JFrame( "FrameDemo" );
-    frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-    final JButton button = new JButton( "Foo" );
-    button.addActionListener( new ActionListener()
+    _listener = new CollectingEDTViolationListener();
+    DispatchUtil.installEDTViolationListener( _listener, true );
+  }
+
+  @AfterTest
+  public void uninstallListener()
+  {
+    DispatchUtil.uninstallEDTViolationListener();
+  }
+
+  @Test
+  public void verifyUIConstructionInEDTisOK()
+    throws Exception
+  {
+    SwingUtilities.invokeAndWait( new Runnable()
     {
-      @Override
-      public void actionPerformed( final ActionEvent e )
+      public void run()
+      {
+        displayUIComponets( null );
+      }
+    } );
+    assertZeroEDTViolations();
+  }
+
+  @Test
+  public void verifyRepaintOutsideEDTisOK()
+    throws Exception
+  {
+    final JButton[] buttons = new JButton[1];
+    SwingUtilities.invokeAndWait( new Runnable()
+    {
+      public void run()
+      {
+        buttons[ 0 ] = new JButton();
+        buttons[ 0 ].setSize( 100, 100 );
+      }
+    } );
+
+    buttons[ 0 ].repaint( buttons[ 0 ].getBounds() );
+    buttons[ 0 ].repaint( 0, 0, 100, 100 );
+    buttons[ 0 ].repaint();
+
+    assertZeroEDTViolations();
+  }
+
+  @Test
+  public void verifyUIConstructionOutsideEDTisNotOK()
+    throws Exception
+  {
+    displayUIComponets( null );
+    assertEDTViolations();
+  }
+
+  @Test
+  public void verifyInvokeInEDTFromEDTResultsInException()
+    throws Exception
+  {
+    SwingUtilities.invokeAndWait( new Runnable()
+    {
+      public void run()
       {
         try
         {
-          DispatchUtil.invokeOutsideEDT( new Callable<Object>()
-          {
-            @Override
-            public Object call()
-              throws Exception
-            {
-              System.out.println( "El starto!" );
-              for ( int i = 0; i < 4; i++ )
-              {
-                System.out.println( ( i % 2 == 0 ) ? "Tick!" : "Tock!" );
-                Thread.sleep( 1000 );
-              }
-              System.out.println( "El finito!" );
-              return null;
-            }
-          } );
-          System.out.println( "El finito outo!" );
+          DispatchUtil.invokeInEDT( invoker() );
+          Assert.fail( "Expected to to fail to invoke in EDT from EDT" );
         }
-        catch ( Exception e1 )
+        catch ( final Exception e )
         {
-          e1.printStackTrace();
+          Assert.assertTrue( e instanceof IllegalStateException );
+          Assert.assertEquals( e.getMessage(), "Should not be calling invokeInEDT from EDT" );
         }
       }
     } );
-    frame.getContentPane().add( button, BorderLayout.CENTER );
+    assertZeroEDTViolations();
+    assertNotInvoked();
+  }
+
+  @Test
+  public void verifyInvokeOutsideEDTFromEDTIsOK()
+    throws Exception
+  {
+    SwingUtilities.invokeAndWait( new Runnable()
+    {
+      public void run()
+      {
+        displayUIComponets( new Runnable()
+        {
+          @Override
+          public void run()
+          {
+            try
+            {
+              DispatchUtil.invokeOutsideEDT( invoker() );
+            }
+            catch ( final Exception e )
+            {
+              e.printStackTrace();
+            }
+          }
+        } );
+      }
+    } );
+    assertZeroEDTViolations();
+    assertInvoked();
+  }
+
+  @Test
+  public void verifyInvokeInEDTFromOutsideEDTIsOK()
+    throws Exception
+  {
+    DispatchUtil.invokeInEDT( invoker() );
+    assertZeroEDTViolations();
+    assertInvoked();
+  }
+
+  @Test
+  public void verifyInvokeOutsideEDTFromOutsideEDTIsOK()
+    throws Exception
+  {
+    try
+    {
+      DispatchUtil.invokeOutsideEDT( invoker() );
+      Assert.fail( "Expected to to fail to invoke outside EDT from outside EDT" );
+    }
+    catch ( final Exception e )
+    {
+      Assert.assertTrue( e instanceof IllegalStateException );
+      Assert.assertEquals( e.getMessage(), "Should not be calling invokeOutsideEDT when not in EDT" );
+    }
+
+    assertZeroEDTViolations();
+    assertNotInvoked();
+  }
+
+  private Callable<Object> invoker()
+  {
+    _invoked = false;
+    return new Callable<Object>()
+    {
+      @Override
+      public Object call()
+        throws Exception
+      {
+        _invoked = true;
+        return null;
+      }
+    };
+  }
+
+  private void displayUIComponets( final Runnable runnable )
+  {
+    final JFrame frame = new JFrame( "Am I on EDT?" );
+    frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+    frame.add( new JButton( "JButton" ) );
     frame.pack();
     frame.setVisible( true );
+    if ( null != runnable )
+    {
+      runnable.run();
+    }
+    frame.dispose();
+  }
+
+  private void assertInvoked()
+  {
+    Assert.assertTrue( _invoked, "invoked" );
+  }
+
+  private void assertNotInvoked()
+  {
+    Assert.assertFalse( _invoked, "invoked" );
+  }
+
+  private void assertZeroEDTViolations()
+  {
+    Assert.assertEquals( 0, _listener._violations.size(), "violations=" + _listener._violations );
+  }
+
+  private void assertEDTViolations()
+  {
+    Assert.assertTrue( _listener._violations.size() > 0, "violations=" + _listener._violations );
   }
 }
