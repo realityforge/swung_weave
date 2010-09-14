@@ -22,9 +22,9 @@ of available plugins and install it.
 
 == How it works
 
-For each module of the project, the plugin looks for a class named org.realityforge.swung_weave.tool.Main in
-its classpath. If found, it scans all the classes of the project in its output directories and enhances the
-annotated methods using it.
+For each module of the project with the SwungWeave facet, the plugin looks for a class named
+org.realityforge.swung_weave.tool.Main in its classpath. If found, it scans all the classes of the
+module in its main and test output directories and enhances the annotated methods using it.
 
 == TODO
 
