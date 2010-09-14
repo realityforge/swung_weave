@@ -8,3 +8,4 @@ repositories:
 
 artifacts:
   asm: asm:asm-all:jar:3.3
+  jdom: org.jdom:jdom:jar:1.1
