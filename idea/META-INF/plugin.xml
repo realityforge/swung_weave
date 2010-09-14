@@ -25,5 +25,7 @@
   </actions>
 
   <extensions defaultExtensionNs="com.intellij">
+    <facetType implementation="org.realityforge.swung_weave.facet.SwungWeaveFacetType"/>
+    <frameworkSupport implementation="org.realityforge.swung_weave.facet.SwungWeaveSupportProvider"/>
   </extensions>
 </idea-plugin>

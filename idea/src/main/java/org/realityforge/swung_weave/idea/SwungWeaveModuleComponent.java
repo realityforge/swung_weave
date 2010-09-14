@@ -1,5 +1,8 @@
 package org.realityforge.swung_weave.idea;
 
+import com.intellij.facet.Facet;
+import com.intellij.facet.FacetManager;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.compiler.CompileContext;
 import com.intellij.openapi.compiler.CompileTask;
 import com.intellij.openapi.compiler.CompilerManager;
@@ -22,6 +25,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
+import org.realityforge.swung_weave.facet.SwungWeaveFacet;
 
 /**
  * This component enhances SwungWeave annotated classes appropriately. The enhancement operation
@@ -37,10 +41,12 @@ public class SwungWeaveModuleComponent
   private static final String RUN_METHOD_NAME = "run";
 
   private final Module _module;
+  private final FacetManager _facetManager;
 
   public SwungWeaveModuleComponent( final Module module )
   {
     _module = module;
+    _facetManager = FacetManager.getInstance( _module );
   }
 
   public void initComponent()
@@ -79,42 +85,38 @@ public class SwungWeaveModuleComponent
       @Override
       public boolean execute( final CompileContext compileContext )
       {
-        final VirtualFile outputDir = compileContext.getModuleOutputDirectory( _module );
-        if ( null != outputDir )
+        if ( !hasSwungWeaveFacet() )
         {
-          final String baseDir = outputDir.getPath();
-          final List<String> classFileNames = new ArrayList<String>();
-          collectClassFileNames( classFileNames, baseDir );
-
-          final List<String> args = new ArrayList<String>();
-          args.add( "-d" );
-          args.add( baseDir );
-          args.addAll( classFileNames );
-
-          try
-          {
-            invokeMain( compileContext, args.toArray( new String[args.size()] ) );
-          }
-          catch ( Throwable t )
-          {
-            if ( t instanceof InvocationTargetException )
-            {
-              t = t.getCause();
-            }
-
-            compileContext.addMessage( CompilerMessageCategory.ERROR,
-                                       "An unexpected error of type " + t.getClass().getName()
-                                       + " occurred in the SwungWeave plugin. Message: "
-                                       + t.getMessage(),
-                                       null, -1, -1 );
-            t.printStackTrace(); // TODO need better logging
-            return false;
-          }
-
+          return true;
         }
-        return true;
+
+        // The module has the SwungWeave facet, so we enhance its main classes
+        final VirtualFile outputDir = compileContext.getModuleOutputDirectory( _module );
+        boolean success = enhanceClasses( outputDir, compileContext );
+
+        if (success) {
+          // enhancement of main classes succeeded, now we enhance test classes
+          final VirtualFile testOutputDir = compileContext.getModuleOutputDirectoryForTests( _module );
+          success = enhanceClasses( testOutputDir, compileContext );
+        }
+
+        return success;
       }
     } );
+  }
+
+  private boolean hasSwungWeaveFacet()
+  {
+    boolean hasSwungWeaveFacet = false;
+    for ( final Facet facet : _facetManager.getAllFacets() )
+    {
+      if ( facet instanceof SwungWeaveFacet )
+      {
+        hasSwungWeaveFacet = true;
+        break;
+      }
+    }
+    return hasSwungWeaveFacet;
   }
 
   /**
@@ -127,7 +129,7 @@ public class SwungWeaveModuleComponent
   private void collectClassFileNames( final List<String> classFileNames, final String baseDir )
   {
     final File dir = new File( baseDir );
-    for ( File file : dir.listFiles() )
+    for ( final File file : dir.listFiles() )
     {
       if ( file.isDirectory() )
       {
@@ -143,28 +145,74 @@ public class SwungWeaveModuleComponent
     }
   }
 
+  /**
+   * Enhancing all the classes inside <code>outputDir</code> using SwungWeave.
+   *
+   * @param outputDir The directory that contains the .class file that should be enhanced
+   * @param compileContext The module compilation context
+   * @return <code>false</code> in case of an error. <code>true</code> otherwise.
+   */
+  private boolean enhanceClasses( final VirtualFile outputDir, final CompileContext compileContext )
+  {
+    if ( null != outputDir )
+    {
+      final String baseDir = outputDir.getPath();
+      final List<String> classFileNames = new ArrayList<String>();
+      collectClassFileNames( classFileNames, baseDir );
+
+      final List<String> args = new ArrayList<String>();
+      args.add( "-d" );
+      args.add( baseDir );
+      args.addAll( classFileNames );
+
+      try
+      {
+        invokeMain( compileContext, args.toArray( new String[args.size()] ) );
+      }
+      catch ( Throwable t )
+      {
+        if ( t instanceof InvocationTargetException )
+        {
+          t = t.getCause();
+        }
+
+        compileContext.addMessage( CompilerMessageCategory.ERROR,
+                                   "An unexpected error of type " + t.getClass().getName() +
+                                   " occurred in the SwungWeave plugin. Message: " + t.getMessage(),
+                                   null,
+                                   -1,
+                                   -1 );
+        t.printStackTrace(); // TODO need better logging
+        return false;
+      }
+    }
+    return true;
+  }
+
   private void invokeMain( final CompileContext context, final String[] args )
     throws NoSuchMethodException, IllegalAccessException,
            InvocationTargetException, IOException, InstantiationException
   {
     final ClassLoader cl = newClassLoader( context, _module );
-    final ClassLoader oldLoader =
-      Thread.currentThread().getContextClassLoader();
+    final ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader( cl );
 
 
     System.out.println( "Enhancing " + _module.getName() + " classes." );
-    context.addMessage( CompilerMessageCategory.INFORMATION, "Enhancing " + _module.getName() + " classes.", null, -1,
+    context.addMessage( CompilerMessageCategory.INFORMATION,
+                        "Enhancing " + _module.getName() + " classes.",
+                        null,
+                        -1,
                         -1 );
 
     try
     {
       final Class mainClass = Class.forName( MAIN_CLASS_NAME );
-      final Object mainObj = mainClass.newInstance();
+      final Object main = mainClass.newInstance();
       final Method runMethod = mainClass.getDeclaredMethod( RUN_METHOD_NAME, String[].class );
-      runMethod.invoke( mainObj, new Object[]{ args } );
+      runMethod.invoke( main, new Object[]{ args } );
     }
-    catch ( ClassNotFoundException cnfe )
+    catch ( final ClassNotFoundException cnfe )
     {
       // Ignore this module because it doesn't have SwungWeave lib in its classpath
     }
@@ -173,7 +221,6 @@ public class SwungWeaveModuleComponent
       Thread.currentThread().setContextClassLoader( oldLoader );
     }
   }
-
 
   /**
    * <p>Creates a new {@link ClassLoader} that includes all the module jars
@@ -190,8 +237,7 @@ public class SwungWeaveModuleComponent
   {
     final Collection<URL> urls = new LinkedList<URL>();
 
-    final UrlClassLoader loader =
-      (UrlClassLoader) getClass().getClassLoader();
+    final UrlClassLoader loader = (UrlClassLoader) getClass().getClassLoader();
     urls.addAll( loader.getUrls() );
 
     for ( final VirtualFile vf : context.getAllOutputDirectories() )
@@ -199,9 +245,8 @@ public class SwungWeaveModuleComponent
       urls.add( new File( vf.getPath() ).getCanonicalFile().toURI().toURL() );
     }
 
-    final PathsList paths = ProjectRootsTraversing.collectRoots( module,
-                                                           ProjectRootsTraversing.PROJECT_LIBRARIES );
-    for ( VirtualFile vf : paths.getVirtualFiles() )
+    final PathsList paths = ProjectRootsTraversing.collectRoots( module, ProjectRootsTraversing.PROJECT_LIBRARIES );
+    for ( final VirtualFile vf : paths.getVirtualFiles() )
     {
       final File f = new File( vf.getPath() );
       urls.add( f.toURI().toURL() );
