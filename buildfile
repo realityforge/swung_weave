@@ -37,7 +37,7 @@ define_with_central_layout("swung-weave", true, false) do
 
   desc "SwingWeave: API and Annotations"
   define_with_central_layout "api" do
-    test.using :testng
+    test.using :testng, :fail_on_failure=>false
     package(:bundle).tap do |bnd|
       bnd['Export-Package'] = "org.realityforge.swung_weave.*;version=#{version}"
     end
