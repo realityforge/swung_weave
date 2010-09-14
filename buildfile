@@ -1,4 +1,4 @@
-VERSION_NUMBER = "1.0.0"
+VERSION_NUMBER = "1.0.3"
 GROUP = "org.realityforge.swung-weave"
 
 require 'buildr_bnd'
@@ -65,7 +65,7 @@ define_with_central_layout("swung-weave", true, false) do
   define_with_central_layout "buildr" do
 
     generated_file = _(:target, :generated, "version.rb")
-    file(generated_file) do
+    file(generated_file => Buildr.application.buildfile) do
       mkdir_p File.dirname(generated_file)
       File.open(generated_file, "wb") do |f|
         f.write <<TEXT
@@ -73,7 +73,8 @@ module Buildr
   module SwungWeave
     private
       VERSION="#{VERSION_NUMBER}"
-      ASM_ARTIFACT="#{:asm}"
+      ASM_ARTIFACT="#{artifact(:asm).to_spec}"
+      GROUP="#{GROUP}"
   end
 end
 TEXT

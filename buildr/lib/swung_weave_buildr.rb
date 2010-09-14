@@ -7,7 +7,7 @@ module Buildr
     class << self
 
       def api_artifact
-        "org.realityforge:swung-weave-api:jar:#{VERSION}"
+        "#{GROUP}:swung-weave-api:jar:#{VERSION}"
       end
 
       def enhance(dir)
@@ -25,7 +25,7 @@ module Buildr
       def requires
         [
           self.api_artifact,
-          "org.realityforge:swung-weave-tool:jar:#{VERSION}",
+          "#{GROUP}:swung-weave-tool:jar:#{VERSION}",
           ASM_ARTIFACT
         ]
       end
