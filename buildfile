@@ -56,7 +56,7 @@ define_with_central_layout("swung-weave", true, false) do
   desc "SwingWeave: IntelliJ IDEA plugin"
   define "idea-plugin", :base_dir => 'idea', :layout => CentralLayout.new('idea-plugin', false, true) do
     compile.with OPENAPI, :jdom, projects('tool')
-
+    project.no_iml
     test.using :testng
     package(:jar).include _('META-INF')
   end
