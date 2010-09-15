@@ -20,6 +20,11 @@ module Buildr
         Java::Commands.java 'org.realityforge.swung_weave.tool.Main', *(args + [{ :classpath => cp }])
       end
 
+      # Repositories containing the requirements
+      def remote_repository
+        'http://www.stocksoftware.com.au/repositories/releases'
+      end
+
       private
 
       def requires
