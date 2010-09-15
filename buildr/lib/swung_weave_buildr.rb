@@ -16,8 +16,8 @@ module Buildr
         args << dir
         args << "--verbose"
         args << "--debug" if Buildr.application.options.trace
-	    cp = Buildr.artifacts(requires).each(&:invoke).map(&:to_s)
-        Java::Commands.java 'org.realityforge.swung_weave.tool.Main', *(args + [{ :classpath => cp }])
+        cp = Buildr.artifacts(requires).each(&:invoke).map(&:to_s)
+        Java::Commands.java 'org.realityforge.swung_weave.tool.Main', *(args + [{:classpath => cp}])
       end
 
       private
