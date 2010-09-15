@@ -10,6 +10,7 @@ public class SwungWeaveProjectComponent
 {
   private static final String COMPONENT_NAME = "SwungWeave Enhancer";
 
+  @SuppressWarnings( { "UnusedDeclaration" } )
   public SwungWeaveProjectComponent( final Project project )
   {
   }
