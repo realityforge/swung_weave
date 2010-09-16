@@ -1,4 +1,4 @@
-VERSION_NUMBER = "1.0.7"
+VERSION_NUMBER = "1.0.8-SNAPSHOT"
 GROUP = "org.realityforge.swung-weave"
 
 require 'buildr_bnd'
@@ -37,7 +37,7 @@ define_with_central_layout("swung-weave", true, false) do
 
   desc "SwingWeave: API and Annotations"
   define_with_central_layout "api" do
-    test.using :testng, :fail_on_failure=>false
+    test.using :testng
     package(:bundle).tap do |bnd|
       bnd['Export-Package'] = "org.realityforge.swung_weave.*;version=#{version}"
     end
@@ -56,7 +56,7 @@ define_with_central_layout("swung-weave", true, false) do
   desc "SwingWeave: IntelliJ IDEA plugin"
   define "idea-plugin", :base_dir => 'idea', :layout => CentralLayout.new('idea-plugin', false, true) do
     compile.with OPENAPI, :jdom, projects('tool')
-    project.version = '1.0.6'
+    project.no_iml
     test.using :testng
     package(:jar).include _('META-INF')
   end

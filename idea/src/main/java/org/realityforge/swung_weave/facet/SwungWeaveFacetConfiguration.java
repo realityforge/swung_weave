@@ -14,7 +14,7 @@ public class SwungWeaveFacetConfiguration implements FacetConfiguration
   public FacetEditorTab[] createEditorTabs( final FacetEditorContext facetEditorContext,
                                             final FacetValidatorsManager facetValidatorsManager )
   {
-    return new FacetEditorTab[0];  //To change body of implemented methods use File | Settings | File Templates.
+    return new FacetEditorTab[0];
   }
 
   @Override
@@ -26,6 +26,6 @@ public class SwungWeaveFacetConfiguration implements FacetConfiguration
   @Override
   public void writeExternal( final Element element )
     throws WriteExternalException
-  {    
+  {
   }
 }

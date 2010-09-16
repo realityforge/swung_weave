@@ -22,9 +22,6 @@ public class SwungWeaveSupportProvider
   protected void setupConfiguration( final SwungWeaveFacet facet,
                                      final ModifiableRootModel modifiableRootModel,
                                      final FrameworkVersion frameworkVersion )
-
-
   {
-
   }
 }
