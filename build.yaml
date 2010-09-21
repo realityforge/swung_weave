@@ -1,4 +1,5 @@
 gems:
+  - buildr >= 1.4.2
   - buildr-bnd = 0.0.5
   - buildr-iidea = 0.0.9
 
