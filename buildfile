@@ -50,6 +50,7 @@ define_with_central_layout("swung-weave", true, false) do
   define "idea-plugin", :base_dir => 'idea', :layout => CentralLayout.new('idea-plugin', false, true) do
     compile.with OPENAPI, :jdom, projects('tool')
     project.no_iml
+    project.resources.filter.using :"version" => project.version 
     test.using :testng
     package(:jar)
   end
