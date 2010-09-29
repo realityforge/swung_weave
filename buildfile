@@ -51,7 +51,7 @@ define_with_central_layout("swung-weave", true, false) do
     compile.with OPENAPI, :jdom, projects('tool')
     project.no_iml
     test.using :testng
-    package(:jar).include _('META-INF')
+    package(:jar)
   end
 
   desc "SwingWeave: Buildr extension"
