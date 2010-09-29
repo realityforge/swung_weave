@@ -28,7 +28,7 @@ define_with_central_layout("swung-weave", true, false) do
 
   ipr.extra_modules << 'idea/idea.iml'
 
-  desc "SwingWeave: API and Annotations"
+  desc "SwungWeave: API and Annotations"
   define_with_central_layout "api" do
     test.using :testng
     package(:bundle).tap do |bnd|
@@ -37,7 +37,7 @@ define_with_central_layout("swung-weave", true, false) do
     package(:sources)
   end
 
-  desc "SwingWeave: Bytecode weaver tool"
+  desc "SwungWeave: Bytecode weaver tool"
   define_with_central_layout "tool" do
     compile.with :asm, projects('api')
     test.using :testng
@@ -47,7 +47,7 @@ define_with_central_layout("swung-weave", true, false) do
     end
   end
 
-  desc "SwingWeave: IntelliJ IDEA plugin"
+  desc "SwungWeave: IntelliJ IDEA plugin"
   define "idea-plugin", :base_dir => 'idea', :layout => CentralLayout.new('idea-plugin', false, true) do
     compile.with OPENAPI, :jdom, projects('tool')
     project.no_iml
@@ -56,7 +56,7 @@ define_with_central_layout("swung-weave", true, false) do
     package(:jar)
   end
 
-  desc "SwingWeave: Buildr extension"
+  desc "SwungWeave: Buildr extension"
   define_with_central_layout "buildr" do
 
     generated_file = _(:target, :generated, "version.rb")
