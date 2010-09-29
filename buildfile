@@ -41,6 +41,7 @@ define_with_central_layout("swung-weave", true, false) do
     package(:bundle).tap do |bnd|
       bnd['Export-Package'] = "org.realityforge.swung_weave.*;version=#{version}"
     end
+    package(:sources)
   end
 
   desc "SwingWeave: Bytecode weaver tool"
