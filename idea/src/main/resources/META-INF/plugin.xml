@@ -1,8 +1,7 @@
-<!-- TODO: Generate this -->
 <idea-plugin version="2">
   <name>SwungWeave</name>
   <description>SwungWeave: Bytecode weaver to simplify Swing UI code</description>
-  <version>1.0.7</version>
+  <version>${version}</version>
   <vendor>RealityForge.org</vendor>
   <idea-version since-build="8000"/>
 
