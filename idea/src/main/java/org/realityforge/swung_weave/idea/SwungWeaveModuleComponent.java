@@ -93,7 +93,8 @@ public class SwungWeaveModuleComponent
         final VirtualFile outputDir = compileContext.getModuleOutputDirectory( _module );
         boolean success = enhanceClasses( outputDir, compileContext );
 
-        if (success) {
+        if ( success )
+        {
           // enhancement of main classes succeeded, now we enhance test classes
           final VirtualFile testOutputDir = compileContext.getModuleOutputDirectoryForTests( _module );
           success = enhanceClasses( testOutputDir, compileContext );
@@ -147,7 +148,7 @@ public class SwungWeaveModuleComponent
   /**
    * Enhancing all the classes inside <code>outputDir</code> using SwungWeave.
    *
-   * @param outputDir The directory that contains the .class file that should be enhanced
+   * @param outputDir      The directory that contains the .class file that should be enhanced
    * @param compileContext The module compilation context
    * @return <code>false</code> in case of an error. <code>true</code> otherwise.
    */
