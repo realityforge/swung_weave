@@ -1,6 +1,7 @@
 require 'buildr'
 require 'buildr/java'
 require 'buildr/swung_weave/version'
+require 'tempfile'
 
 module Buildr
   module SwungWeave
@@ -11,13 +12,22 @@ module Buildr
       end
 
       def enhance(dir)
-        args = Dir["#{dir}/**/*.class"]
-        args << "-d"
-        args << dir
-        args << "--verbose"
-        args << "--debug" if Buildr.application.options.trace
         cp = Buildr.artifacts(requires).each(&:invoke).map(&:to_s)
-        Java::Commands.java 'org.realityforge.swung_weave.tool.Main', *(args + [{:classpath => cp}])
+        tf = Tempfile.open('swung_weave')
+        begin
+          tf << Dir["#{dir}/**/*.class"].join("\n")
+          tf.close
+          args = []
+          args << "@#{tf.path}"
+          args << "-d"
+          args << dir
+          args << "--verbose"
+          args << "--debug" if Buildr.application.options.trace
+          
+          Java::Commands.java 'org.realityforge.swung_weave.tool.Main', *(args + [{:classpath => cp}])
+        rescue
+          tf.close!
+        end
       end
 
       # Repositories containing the requirements
