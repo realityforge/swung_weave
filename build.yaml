@@ -3,10 +3,17 @@ gems:
   - buildr-bnd = 0.0.5
   - buildr-iidea = 0.0.9
 
-repositories:
-  remote:
-    - http://www.stocksoftware.com.au/repositories/external
-
 artifacts:
   asm: asm:asm-all:jar:3.3
   jdom: org.jdom:jdom:jar:1.1
+
+repositories:
+  remote:
+   - http://www.stocksoftware.com.au/repositories/external
+   - http://www.stocksoftware.com.au/repositories/releases
+   - https://repository.apache.org/content/repositories/releases
+   - http://www.ibiblio.org/maven2
+   - http://www.aQute.biz/repo
+  release_to:
+    url: sftp://www.stocksoftware.com.au/www/stocksoftware/web/repositories/releases
+    permissions: 0664
