@@ -45,7 +45,7 @@ public class Main
     new Main().run( args );
   }
 
-  void run( final String[] args )
+  public void run( final String[] args )
   {
     processArgs( args );
     if ( isError() )
