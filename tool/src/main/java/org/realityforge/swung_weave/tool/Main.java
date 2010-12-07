@@ -20,7 +20,7 @@ import org.objectweb.asm.ClassWriter;
 
 public class Main
 {
-  static final Logger L = Logger.getLogger( Main.class.getName() );
+  static final Logger LOG = Logger.getLogger( Main.class.getName() );
 
   private final LinkedList<String> _filenames = new LinkedList<String>();
   private String _baseDir = "";
@@ -39,9 +39,9 @@ public class Main
       }
     } );
     handler.setLevel( Level.ALL );
-    L.setLevel( Level.WARNING );
-    L.addHandler( handler );
-    L.setUseParentHandlers( false );
+    LOG.setLevel( Level.WARNING );
+    LOG.addHandler( handler );
+    LOG.setUseParentHandlers( false );
     new Main().run( args );
   }
 
@@ -52,12 +52,12 @@ public class Main
     {
       return;
     }
-    L.info( "Weave Tool starting" );
+    LOG.info( "Weave Tool starting" );
 
-    L.fine( "Files to process:" );
+    LOG.fine( "Files to process:" );
     for ( final String filename : getFilenames() )
     {
-      L.fine( "\t" + filename );
+      LOG.fine( "\t" + filename );
     }
 
     int transformCount = 0;
@@ -65,16 +65,16 @@ public class Main
     final long start = System.currentTimeMillis();
     for ( final String filename : getFilenames() )
     {
-      L.fine( "Evaluating: " + filename );
+      LOG.fine( "Evaluating: " + filename );
       if ( process( filename ) )
       {
         transformCount++;
-        L.fine( "Transformed: " + filename );
+        LOG.fine( "Transformed: " + filename );
       }
       else
       {
         skipCount++;
-        L.fine( "Skipped: " + filename );
+        LOG.fine( "Skipped: " + filename );
       }
       if ( isError() )
       {
@@ -85,7 +85,7 @@ public class Main
     final long seconds = ( System.currentTimeMillis() - start ) / 1000;
     final String message =
       "Weave tool completed in " + seconds + "s (Transformed: " + transformCount + " Skipped: " + skipCount + ")";
-    L.info( message );
+    LOG.info( message );
   }
 
   private boolean process( final String filename )
@@ -125,9 +125,9 @@ public class Main
         final File file = new File( entry.getKey() );
         if ( file.getParentFile().mkdirs() )
         {
-          if ( L.isLoggable( Level.FINE ) )
+          if ( LOG.isLoggable( Level.FINE ) )
           {
-            L.fine( "Created dir: " + file.getParentFile().getAbsolutePath() );
+            LOG.fine( "Created dir: " + file.getParentFile().getAbsolutePath() );
           }
         }
         try
@@ -163,11 +163,11 @@ public class Main
       }
       else if ( "--verbose".equals( arg ) )
       {
-        L.setLevel( Level.INFO );
+        LOG.setLevel( Level.INFO );
       }
       else if ( "--debug".equals( arg ) )
       {
-        L.setLevel( Level.FINE );
+        LOG.setLevel( Level.FINE );
       }
       else if ( "-d".equals( arg ) )
       {
@@ -200,7 +200,7 @@ public class Main
 
   private void error( final String message, final Throwable e )
   {
-    L.log( Level.SEVERE, message, e );
+    LOG.log( Level.SEVERE, message, e );
     _error = true;
   }
 
