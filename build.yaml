@@ -1,7 +1,7 @@
 gems:
-  - buildr >= 1.4.2
-  - buildr-bnd = 0.0.5
-  - buildr-iidea = 0.0.9
+  - buildr >= 1.4.4
+  - buildr-bnd = 0.0.6
+  - buildr-iidea = 0.0.10
 
 artifacts:
   asm: asm:asm-all:jar:3.3
