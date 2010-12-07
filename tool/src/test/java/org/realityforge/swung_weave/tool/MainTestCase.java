@@ -85,16 +85,16 @@ public class MainTestCase
 
   private CollectingHandler initLogger()
   {
-    Main.L.setUseParentHandlers( false );
-    Main.L.setLevel( Level.ALL );
-    for ( final Handler h : Main.L.getHandlers() )
+    Main.LOG.setUseParentHandlers( false );
+    Main.LOG.setLevel( Level.ALL );
+    for ( final Handler h : Main.LOG.getHandlers() )
     {
-      Main.L.removeHandler( h );
+      Main.LOG.removeHandler( h );
     }
 
     final CollectingHandler handler = new CollectingHandler();
     handler.setLevel( Level.ALL );
-    Main.L.addHandler( handler );
+    Main.LOG.addHandler( handler );
 
     return handler;
   }
