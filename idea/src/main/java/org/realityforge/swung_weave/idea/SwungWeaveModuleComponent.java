@@ -6,6 +6,7 @@ import com.intellij.openapi.compiler.CompileContext;
 import com.intellij.openapi.compiler.CompileTask;
 import com.intellij.openapi.compiler.CompilerManager;
 import com.intellij.openapi.compiler.CompilerMessageCategory;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleComponent;
 import com.intellij.openapi.project.Project;
@@ -34,6 +35,8 @@ import org.realityforge.swung_weave.facet.SwungWeaveFacet;
 public class SwungWeaveModuleComponent
   implements ModuleComponent
 {
+  private static final Logger LOG = Logger.getInstance( SwungWeaveModuleComponent.class.getName() );
+
   private static final String COMPONENT_NAME = "SwingWeave Module Enhancer Component";
 
   private static final String MAIN_CLASS_NAME = "org.realityforge.swung_weave.tool.Main";
@@ -193,28 +196,34 @@ public class SwungWeaveModuleComponent
     throws NoSuchMethodException, IllegalAccessException,
            InvocationTargetException, IOException, InstantiationException
   {
-    final ClassLoader cl = newClassLoader( context, _module );
+    final URLClassLoader loader = newClassLoader( context, _module );
     final ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
-    Thread.currentThread().setContextClassLoader( cl );
+    Thread.currentThread().setContextClassLoader( loader );
 
+    final StringBuilder classPathInfo = new StringBuilder( );
+    classPathInfo.append( _module.getName() ).append( "'s class path is:\n" );
+    for ( final URL url : loader.getURLs() )
+    {
+      classPathInfo.append( "\n\t" ).append( url.toString() );
+    }
 
-    System.out.println( "Enhancing " + _module.getName() + " classes." );
+    LOG.info( classPathInfo.toString() );
+
     context.addMessage( CompilerMessageCategory.INFORMATION,
                         "Enhancing " + _module.getName() + " classes.",
                         null,
                         -1,
                         -1 );
-
     try
     {
-      final Class mainClass = Class.forName( MAIN_CLASS_NAME );
+      final Class mainClass = loader.loadClass( MAIN_CLASS_NAME );
       final Object main = mainClass.newInstance();
       final Method runMethod = mainClass.getDeclaredMethod( RUN_METHOD_NAME, String[].class );
       runMethod.invoke( main, new Object[]{ args } );
     }
     catch ( final ClassNotFoundException cnfe )
     {
-      // Ignore this module because it doesn't have SwungWeave lib in its classpath
+      LOG.error( cnfe );
     }
     finally
     {
@@ -232,7 +241,7 @@ public class SwungWeaveModuleComponent
    * <p/>
    * (Note: this method is copied from the OpenJPA project with some minor modifications.)
    */
-  private ClassLoader newClassLoader( final CompileContext context, final Module module )
+  private URLClassLoader newClassLoader( final CompileContext context, final Module module )
     throws IOException
   {
     final Collection<URL> urls = new LinkedList<URL>();
