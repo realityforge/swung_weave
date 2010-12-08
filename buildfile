@@ -1,4 +1,4 @@
-VERSION_NUMBER = "1.0.13"
+VERSION_NUMBER = "1.0.14"
 GROUP = "org.realityforge.swung-weave"
 
 require 'buildr_bnd'

@@ -93,12 +93,14 @@ public class SwungWeaveModuleComponent
         }
 
         // The module has the SwungWeave facet, so we enhance its main classes
+        LOG.info( "Enhancing main classes of the " + _module.getName() + " module." );
         final VirtualFile outputDir = compileContext.getModuleOutputDirectory( _module );
         boolean success = enhanceClasses( outputDir, compileContext );
 
         if ( success )
         {
           // enhancement of main classes succeeded, now we enhance test classes
+          LOG.info( "Enhancing test classes of the " + _module.getName() + " module." );
           final VirtualFile testOutputDir = compileContext.getModuleOutputDirectoryForTests( _module );
           success = enhanceClasses( testOutputDir, compileContext );
         }
