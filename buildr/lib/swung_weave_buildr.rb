@@ -12,7 +12,7 @@ module Buildr
       end
 
       def enhance(dir)
-        cp = Buildr.artifacts(requires).each(&:invoke).map(&:to_s)
+        cp = Buildr.artifacts(dependencies).each(&:invoke).map(&:to_s)
         tf = Tempfile.open('swung_weave')
         begin
           tf << Dir["#{dir}/**/*.class"].join("\n")
@@ -35,9 +35,7 @@ module Buildr
         'http://www.stocksoftware.com.au/repositories/releases'
       end
 
-      private
-
-      def requires
+      def dependencies
         [
           self.api_artifact,
           "#{GROUP}:swung-weave-tool:jar:#{VERSION}",
