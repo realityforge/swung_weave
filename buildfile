@@ -56,8 +56,8 @@ define_with_central_layout("swung-weave", true, false) do
     package(:jar)
   end
 
-  doc.using Buildr::Doc::Javadoc, :windowtitle => 'SwungWeave', :private => true
-  doc.from projects('idea-plugin', 'tool','api')
+  doc.using :javadoc
+  doc.from projects('tool','api')
 
   desc "SwungWeave: Buildr extension"
   define_with_central_layout "buildr" do
