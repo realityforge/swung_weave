@@ -4348,9 +4348,4 @@ public class ClassToWeave
     }
     entry.invoked();
   }
-
-  public void s(long i, int j)
-  {
-    s(i, j);
-  }
 }
