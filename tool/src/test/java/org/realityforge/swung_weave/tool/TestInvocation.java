@@ -15,6 +15,8 @@ public final class TestInvocation
 
   public final Class<?> annotation;
   public final int methodType;
+  /** Is the target method private */
+  public final boolean isPrivate;
   public final boolean inEDT;
   public final Object[] parameters;
   public final Class<?> returnType;
@@ -38,6 +40,7 @@ public final class TestInvocation
 
   TestInvocation( final Class<?> annotation,
                   final int methodType,
+                  final boolean isPrivate,
                   final boolean inEDT,
                   final Object[] parameters,
                   final Class<?> returnType,
@@ -47,6 +50,7 @@ public final class TestInvocation
   {
     this.annotation = annotation;
     this.methodType = methodType;
+    this.isPrivate = isPrivate;
     this.inEDT = inEDT;
     this.parameters = parameters;
     this.returnType = returnType;
@@ -60,7 +64,7 @@ public final class TestInvocation
     final String shortAnnotationName =
       annotation.getName().substring( "org.realityforge.swung_weave.".length() );
     final String methodTypeSuffix =
-      methodType == STATIC ? "s" : methodType == INSTANCE ? "i" : "c";
+      ( isPrivate ? "p" : "" ) + ( methodType == STATIC ? "s" : methodType == INSTANCE ? "i" : "c" );
     final StringBuilder sb = new StringBuilder();
     for( final Class parameterType : getParameterTypes() )
     {

@@ -1,5 +1,6 @@
 package org.realityforge.swung_weave.tool;
 
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 import org.objectweb.asm.AnnotationVisitor;
@@ -14,6 +15,8 @@ import org.objectweb.asm.Type;
 final class SwClassAdapter
   extends ClassAdapter
 {
+  private static final String GENERATED_ACCESSOR_PREFIX = "sw_access$";
+
   private String _classname;
   private int _adapterCount;
   private boolean _matchedAnnotations;
@@ -63,11 +66,8 @@ final class SwClassAdapter
     }
     final Type[] methodParameterTypes = Type.getArgumentTypes( desc );
     final Type returnType = Type.getReturnType( desc );
-    MethodVisitor v = cv.visitMethod( access,
-                                      methodName,
-                                      desc,
-                                      signature,
-                                      exceptions );
+    final MethodVisitor v = cv.visitMethod( access, methodName, desc, signature, exceptions );
+
     return new MethodAdapter( v )
     {
       private boolean _requiresEDT;
@@ -104,12 +104,22 @@ final class SwClassAdapter
         }
         else
         {
-        return super.visitAnnotation( desc, visible );
+          return super.visitAnnotation( desc, visible );
         }
       }
 
       public void visitCode()
       {
+        if ( _runInEDT || _runOutsideEDT )
+        {
+          // Method is private so we need to generate a magic accessor method.
+          // This is the same approach taken by inner classes.
+          if ( Modifier.isPrivate( access ) )
+          {
+            genAccessor();
+          }
+        }
+
         if( _runInEDT )
         {
           genTransfer( true );
@@ -154,7 +164,7 @@ final class SwClassAdapter
         mv.visitInsn( Opcodes.DUP );
         final StringBuilder paramDesc = new StringBuilder();
         int index = 0;
-        if( ( access & Opcodes.ACC_STATIC ) == 0 )
+        if( !Modifier.isStatic( access ) )
         {
           paramDesc.append( 'L' );
           paramDesc.append( _classname );
@@ -187,7 +197,7 @@ final class SwClassAdapter
                   new String[]{ "java/util/concurrent/Callable" } );
 
         int parameterID = 0;
-        if( ( access & Opcodes.ACC_STATIC ) == 0 )
+        if( !Modifier.isStatic( access ) )
         {
           parameterID += 1;
           cw.visitField( Opcodes.ACC_PRIVATE | Opcodes.ACC_FINAL,
@@ -218,7 +228,7 @@ final class SwClassAdapter
 
         parameterID = 0;
         index = 0;
-        if( ( access & Opcodes.ACC_STATIC ) == 0 )
+        if( !Modifier.isStatic( access ) )
         {
           parameterID += 1;
           index += 1;
@@ -254,7 +264,7 @@ final class SwClassAdapter
                           new String[]{ "java/lang/Exception" } );
 
         parameterID = 0;
-        if( ( access & Opcodes.ACC_STATIC ) == 0 )
+        if( !Modifier.isStatic( access ) )
         {
           parameterID += 1;
           callMethod.visitVarInsn( Opcodes.ALOAD, 0 );
@@ -270,16 +280,16 @@ final class SwClassAdapter
                                      "p" + parameterID,
                                      type.getDescriptor() );
         }
-        final int invokeOpcode;
-        if( ( access & Opcodes.ACC_STATIC ) == 0 )
+        final String targetMethodName;
+        if ( Modifier.isPrivate( access ) )
         {
-          invokeOpcode = Opcodes.INVOKEVIRTUAL;
+          targetMethodName = GENERATED_ACCESSOR_PREFIX + methodName;
         }
         else
         {
-          invokeOpcode = Opcodes.INVOKESTATIC;
+          targetMethodName = methodName;
         }
-        callMethod.visitMethodInsn( invokeOpcode, _classname, methodName, desc );
+        callMethod.visitMethodInsn( invokeOpcode( access ), _classname, targetMethodName, desc );
         final int sort = returnType.getSort();
         if( Type.VOID == sort )
         {
@@ -323,14 +333,84 @@ final class SwClassAdapter
         }
         callMethod.visitInsn( Opcodes.ARETURN );
 
-
         // max stack and max locals automatically computed
         callMethod.visitMaxs( 0, 0 );
         callMethod.visitEnd();
 
         _adapters.put( helperClass.replace( '/', '.' ), cw.toByteArray() );
       }
+
+      private void genAccessor()
+      {
+        //Generate accessor
+        final int accessModifiers = Opcodes.ACC_PROTECTED + ( Modifier.isStatic( access ) ? Opcodes.ACC_STATIC : 0 );
+        final MethodVisitor accessorMethod =
+          cv.visitMethod( accessModifiers, GENERATED_ACCESSOR_PREFIX + methodName, desc, signature, exceptions );
+
+        int index = 0;
+        if ( !Modifier.isStatic( access ) )
+        {
+          accessorMethod.visitVarInsn( Opcodes.ALOAD, 0 );
+          index += 1;
+        }
+
+        for ( final Type type : methodParameterTypes )
+        {
+          accessorMethod.visitVarInsn( loadOpcode( type.getSort() ), index );
+          index += 1 + ( isDoubleSlot( type ) ? 1 : 0 );
+        }
+
+        final int invokeOpcode = invokeOpcode( access );
+        accessorMethod.visitMethodInsn( invokeOpcode, _classname, methodName, desc );
+        final int sort = returnType.getSort();
+        if ( Type.VOID == sort )
+        {
+          accessorMethod.visitInsn( Opcodes.RETURN );
+        }
+        else if ( Type.BOOLEAN == sort ||
+                  Type.BYTE == sort ||
+                  Type.CHAR == sort ||
+                  Type.SHORT == sort ||
+                  Type.INT == sort )
+        {
+          accessorMethod.visitInsn( Opcodes.IRETURN );
+        }
+        else if ( Type.LONG == sort )
+        {
+          accessorMethod.visitInsn( Opcodes.LRETURN );
+        }
+        else if ( Type.FLOAT == sort )
+        {
+          accessorMethod.visitInsn( Opcodes.FRETURN );
+        }
+        else if ( Type.DOUBLE == sort )
+        {
+          accessorMethod.visitInsn( Opcodes.DRETURN );
+        }
+        else //OBJECT and arrays
+        {
+          accessorMethod.visitInsn( Opcodes.ARETURN );
+        }
+
+        // max stack and max locals automatically computed
+        accessorMethod.visitMaxs( 0, 0 );
+        accessorMethod.visitEnd();
+      }
     };
+  }
+
+  private static int invokeOpcode( final int access )
+  {
+    final int invokeOpcode;
+    if ( !Modifier.isStatic( access ) )
+    {
+      invokeOpcode = Opcodes.INVOKEVIRTUAL;
+    }
+    else
+    {
+      invokeOpcode = Opcodes.INVOKESTATIC;
+    }
+    return invokeOpcode;
   }
 
   private static boolean isDoubleSlot( final Type type )

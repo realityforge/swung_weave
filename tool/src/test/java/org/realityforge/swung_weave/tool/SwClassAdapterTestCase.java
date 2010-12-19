@@ -38,12 +38,13 @@ public class SwClassAdapterTestCase
     classData.put( classname, cw.toByteArray() );
 
     //noinspection ConstantIfStatement
-    if ( false )
+    if ( true )
     {
       for ( final Map.Entry<String, byte[]> entry : classData.entrySet() )
       {
         final String baseDir = "target/sw/";
         final File file = new File( baseDir + entry.getKey().replace( '.', '/' ) + ".class" );
+        //noinspection ResultOfMethodCallIgnored
         file.getParentFile().mkdirs();
 
         final FileOutputStream fos = new FileOutputStream( file );
@@ -230,54 +231,67 @@ public class SwClassAdapterTestCase
                            final Object[] parameters,
                            final Class<?> returnType )
   {
-    failInEDT( tests, DisallowsEDT.class, methodType, parameters, returnType );
-    succeed( tests, DisallowsEDT.class, methodType, false, parameters, false, returnType );
-    failOutsideEDT( tests, RequiresEDT.class, methodType, parameters, returnType );
-    succeed( tests, RequiresEDT.class, methodType, true, parameters, true, returnType );
-    succeed( tests, RunInEDT.class, methodType, true, parameters, true, returnType );
-    succeed( tests, RunInEDT.class, methodType, false, parameters, true, returnType );
-    succeed( tests, RunOutsideEDT.class, methodType, true, parameters, false, returnType );
-    succeed( tests, RunOutsideEDT.class, methodType, false, parameters, false, returnType );
+    failInEDT( tests, DisallowsEDT.class, methodType, false, parameters, returnType );
+    succeed( tests, DisallowsEDT.class, methodType, false, false, parameters, false, returnType );
+    failOutsideEDT( tests, RequiresEDT.class, methodType, false, parameters, returnType );
+    succeed( tests, RequiresEDT.class, methodType, false, true, parameters, true, returnType );
+    succeed( tests, RunInEDT.class, methodType, false, true, parameters, true, returnType );
+    succeed( tests, RunInEDT.class, methodType, false, false, parameters, true, returnType );
+    succeed( tests, RunOutsideEDT.class, methodType, false, true, parameters, false, returnType );
+    succeed( tests, RunOutsideEDT.class, methodType, false, false, parameters, false, returnType );
+
+    failInEDT( tests, DisallowsEDT.class, methodType, true, parameters, returnType );
+    succeed( tests, DisallowsEDT.class, methodType, true, false, parameters, false, returnType );
+    failOutsideEDT( tests, RequiresEDT.class, methodType, true, parameters, returnType );
+    succeed( tests, RequiresEDT.class, methodType, true, true, parameters, true, returnType );
+    succeed( tests, RunInEDT.class, methodType, true, true, parameters, true, returnType );
+    succeed( tests, RunInEDT.class, methodType, true, false, parameters, true, returnType );
+    succeed( tests, RunOutsideEDT.class, methodType, true, true, parameters, false, returnType );
+    succeed( tests, RunOutsideEDT.class, methodType, true, false, parameters, false, returnType );
   }
 
   private static void succeed( final ArrayList<TestInvocation> tests,
                                final Class<?> annotation,
                                final int methodType,
+                               final boolean isPrivate,
                                final boolean inEDT,
                                final Object[] parameters,
                                final boolean expectedInEDT,
                                final Class<?> returnType )
   {
-    ti( tests, annotation, methodType, inEDT, parameters, expectedInEDT, null, null, returnType );
+    ti( tests, annotation, methodType, isPrivate, inEDT, parameters, expectedInEDT, null, null, returnType );
   }
 
   private static void failInEDT( final ArrayList<TestInvocation> tests,
                                  final Class<?> annotation,
                                  final int methodType,
+                                 final boolean isPrivate,
                                  final Object[] parameters,
                                  final Class<?> returnType )
   {
 
     final String message =
       "Method " + TestInvocation.METHOD_NAME + " must only be invoked in the Event Dispatch Thread.";
-    ti( tests, annotation, methodType, true, parameters, true, IllegalStateException.class, message, returnType );
+    ti( tests, annotation, methodType, isPrivate, true, parameters, true, IllegalStateException.class, message, returnType );
   }
 
   private static void failOutsideEDT( final ArrayList<TestInvocation> tests,
                                       final Class<?> annotation,
                                       final int methodType,
+                                      final boolean isPrivate,
                                       final Object[] parameters,
                                       final Class<?> returnType )
   {
 
     final String message =
       "Method " + TestInvocation.METHOD_NAME + " must not be invoked in the Event Dispatch Thread.";
-    ti( tests, annotation, methodType, false, parameters, false, IllegalStateException.class, message, returnType );
+    ti( tests, annotation, methodType, isPrivate, false, parameters, false, IllegalStateException.class, message, returnType );
   }
 
   private static void ti( final ArrayList<TestInvocation> tests,
                           final Class<?> annotation,
                           final int methodType,
+                          final boolean isPrivate,
                           final boolean inEDT,
                           final Object[] parameters,
                           final boolean expectedInEDT,
@@ -287,6 +301,7 @@ public class SwClassAdapterTestCase
   {
     tests.add( new TestInvocation( annotation,
                                    methodType,
+                                   isPrivate,
                                    inEDT,
                                    parameters,
                                    returnType,
