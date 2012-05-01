@@ -1,4 +1,4 @@
-VERSION_NUMBER = "1.0.16-SNAPSHOT"
+VERSION_NUMBER = "#{`git describe --tags --always`.strip}"
 GROUP = "org.realityforge.swung-weave"
 
 require 'buildr/bnd'
