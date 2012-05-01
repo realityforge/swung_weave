@@ -134,17 +134,21 @@ public class SwungWeaveModuleComponent
   private void collectClassFileNames( final List<String> classFileNames, final String baseDir )
   {
     final File dir = new File( baseDir );
-    for ( final File file : dir.listFiles() )
+    final File[] files = dir.listFiles();
+    if ( null != files )
     {
-      if ( file.isDirectory() )
+      for ( final File file : files )
       {
-        collectClassFileNames( classFileNames, file.getAbsolutePath() );
-      }
-      else
-      {
-        if ( file.getName().endsWith( ".class" ) )
+        if ( file.isDirectory() )
         {
-          classFileNames.add( file.getAbsolutePath() );
+          collectClassFileNames( classFileNames, file.getAbsolutePath() );
+        }
+        else
+        {
+          if ( file.getName().endsWith( ".class" ) )
+          {
+            classFileNames.add( file.getAbsolutePath() );
+          }
         }
       }
     }
