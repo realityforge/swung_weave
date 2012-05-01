@@ -1,8 +1,7 @@
 VERSION_NUMBER = "1.0.16-SNAPSHOT"
 GROUP = "org.realityforge.swung-weave"
 
-require 'buildr_bnd'
-require 'buildr_iidea'
+require 'buildr/bnd'
 
 OPENAPI = group('openapi', 'idea', 'idea_rt', 'util', 'extensions', 'annotations', :under => 'com.intellij', :version => '9.0.3')
 
