@@ -1,5 +1,4 @@
 require 'buildr'
-require 'buildr/java'
 require 'buildr/swung_weave/version'
 require 'tempfile'
 
