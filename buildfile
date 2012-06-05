@@ -24,6 +24,9 @@ desc 'SwungWeave: Bytecode weaver to simplify Swing UI code'
 define_with_central_layout("swung-weave", true, false) do
   project.version = VERSION_NUMBER
   project.group = GROUP
+  compile.options.source = '1.6'
+  compile.options.target = '1.6'
+  compile.options.lint = 'all'
 
   ipr.extra_modules << 'idea/idea.iml'
 
