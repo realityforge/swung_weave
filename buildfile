@@ -51,6 +51,7 @@ define_with_central_layout("swung-weave", true, false) do
     project.no_iml
     project.resources.filter.using :"version" => project.version
     test.using :testng
+    test.using :properties => {"java.awt.headless" => true}
     package(:jar)
   end
 
