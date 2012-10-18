@@ -59,7 +59,6 @@ define_with_central_layout("swung-weave", true, false) do
   end
 
   doc.using :javadoc
-  doc "-notree", "-nosince", "-nodeprecated", "-noindex", "-nohelp"
   doc.from projects('tool','api')
 
   desc "SwungWeave: Buildr extension"
