@@ -102,11 +102,3 @@ TEXT
     end
   end
 end
-
-namespace :deploy do
-  desc "Tag release with current version"
-  task :tag do
-    system("git tag -a #{VERSION_NUMBER} -m 'Released #{VERSION_NUMBER}'")
-    puts "Tagged locally.  `git push --tags` if you're sure."
-  end
-end
