@@ -4,6 +4,7 @@ import java.util.concurrent.Callable;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 import org.testng.Assert;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
@@ -169,7 +170,7 @@ public class DispatchUtilTest
   private void displayUIComponets( final Runnable runnable )
   {
     final JFrame frame = new JFrame( "Am I on EDT?" );
-    frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+    frame.setDefaultCloseOperation( WindowConstants.EXIT_ON_CLOSE );
     frame.add( new JButton( "JButton" ) );
     frame.pack();
     frame.setVisible( true );
