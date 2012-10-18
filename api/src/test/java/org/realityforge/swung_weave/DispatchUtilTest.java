@@ -1,5 +1,6 @@
 package org.realityforge.swung_weave;
 
+import java.awt.GraphicsEnvironment;
 import java.util.concurrent.Callable;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -32,6 +33,11 @@ public class DispatchUtilTest
   public void verifyUIConstructionInEDTisOK()
     throws Exception
   {
+    //Don't run test in headless environment
+    if ( GraphicsEnvironment.isHeadless() )
+    {
+      return;
+    }
     SwingUtilities.invokeAndWait( new Runnable()
     {
       public void run()
@@ -67,6 +73,11 @@ public class DispatchUtilTest
   public void verifyUIConstructionOutsideEDTisNotOK()
     throws Exception
   {
+    //Don't run test in headless environment
+    if ( GraphicsEnvironment.isHeadless() )
+    {
+      return;
+    }
     displayUIComponets( null );
     assertEDTViolations();
   }
@@ -99,6 +110,11 @@ public class DispatchUtilTest
   public void verifyInvokeOutsideEDTFromEDTIsOK()
     throws Exception
   {
+    //Don't run test in headless environment
+    if ( GraphicsEnvironment.isHeadless() )
+    {
+      return;
+    }
     SwingUtilities.invokeAndWait( new Runnable()
     {
       public void run()
