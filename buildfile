@@ -19,7 +19,6 @@ end
 
 desc 'SwungWeave: Bytecode weaver to simplify Swing UI code'
 define_with_central_layout("swung-weave", true, false) do
-  project.version = `git describe --tags --always`.strip
   project.group = 'org.realityforge.swung-weave'
   compile.options.source = '1.6'
   compile.options.target = '1.6'
