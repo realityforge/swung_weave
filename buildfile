@@ -29,6 +29,7 @@ define_with_central_layout("swung-weave", true, false) do
   desc "SwungWeave: API and Annotations"
   define_with_central_layout "api" do
     test.using :testng
+    test.using :properties => {"java.awt.headless" => true}
     package(:bundle).tap do |bnd|
       bnd['Export-Package'] = "org.realityforge.swung_weave.*;version=#{version}"
     end
@@ -51,7 +52,6 @@ define_with_central_layout("swung-weave", true, false) do
     project.no_iml
     project.resources.filter.using :"version" => project.version
     test.using :testng
-    test.using :properties => {"java.awt.headless" => true}
     package(:jar)
   end
 
