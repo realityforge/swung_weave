@@ -1,6 +1,3 @@
-VERSION_NUMBER = "#{`git describe --tags --always`.strip}"
-GROUP = "org.realityforge.swung-weave"
-
 require 'buildr/bnd'
 
 OPENAPI = group('openapi', 'idea', 'idea_rt', 'util', 'extensions', 'annotations', :under => 'com.intellij', :version => '9.0.3')
@@ -22,8 +19,8 @@ end
 
 desc 'SwungWeave: Bytecode weaver to simplify Swing UI code'
 define_with_central_layout("swung-weave", true, false) do
-  project.version = VERSION_NUMBER
-  project.group = GROUP
+  project.version = `git describe --tags --always`.strip
+  project.group = 'org.realityforge.swung-weave'
   compile.options.source = '1.6'
   compile.options.target = '1.6'
   compile.options.lint = 'all'
@@ -72,9 +69,9 @@ define_with_central_layout("swung-weave", true, false) do
 module Buildr
   module SwungWeave
     private
-      VERSION="#{VERSION_NUMBER}"
+      VERSION="#{project.version}"
       ASM_ARTIFACT="#{artifact(:asm).to_spec}"
-      GROUP="#{GROUP}"
+      GROUP="#{project.group}"
   end
 end
 TEXT
