@@ -1,4 +1,5 @@
 require 'buildr/bnd'
+require 'buildr/git_auto_version'
 
 OPENAPI = group('openapi', 'idea', 'idea_rt', 'util', 'extensions', 'annotations', :under => 'com.intellij', :version => '9.0.3')
 
