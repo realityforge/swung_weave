@@ -1,7 +1,7 @@
 require 'buildr/bnd'
 require 'buildr/git_auto_version'
 
-OPENAPI = group('openapi', 'idea', 'idea_rt', 'util', 'extensions', 'annotations', :under => 'com.intellij', :version => '9.0.3')
+OPENAPI = group('openapi', 'idea_rt', 'extensions', 'util', 'annotations', :under => 'com.intellij.idea', :version => '12.0.1')
 
 class CentralLayout < Layout::Default
   def initialize(key, top_level, use_subdir)
