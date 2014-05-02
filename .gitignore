@@ -1,6 +1,6 @@
 /target
 /reports
-/out
+/buildr/generated
 /*.iws
 /*.ipr
 *.iml
