@@ -3,8 +3,6 @@ require 'buildr/git_auto_version'
 require 'buildr/single_intermediate_layout'
 require 'buildr/top_level_generate_dir'
 
-OPENAPI = group('openapi', 'idea_rt', 'extensions', 'util', 'annotations', :under => 'com.intellij.idea', :version => '12.0.1')
-
 desc 'SwungWeave: Bytecode weaver to simplify Swing UI code'
 define 'swung-weave' do
   project.group = 'org.realityforge.swung-weave'
