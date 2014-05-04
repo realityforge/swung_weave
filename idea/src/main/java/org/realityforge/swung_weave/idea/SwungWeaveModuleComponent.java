@@ -176,7 +176,7 @@ public class SwungWeaveModuleComponent
 
       try
       {
-        invokeMain( compileContext, args.toArray( new String[args.size()] ) );
+        invokeMain( compileContext, args.toArray( new String[ args.size() ] ) );
       }
       catch ( Throwable t )
       {
@@ -190,7 +190,8 @@ public class SwungWeaveModuleComponent
                                    " occurred in the SwungWeave plugin. Message: " + t.getMessage(),
                                    null,
                                    -1,
-                                   -1 );
+                                   -1
+        );
         t.printStackTrace(); // TODO need better logging
         return false;
       }
@@ -206,7 +207,7 @@ public class SwungWeaveModuleComponent
     final ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader( loader );
 
-    final StringBuilder classPathInfo = new StringBuilder( );
+    final StringBuilder classPathInfo = new StringBuilder();
     classPathInfo.append( _module.getName() ).append( "'s class path is:\n" );
     for ( final URL url : loader.getURLs() )
     {
