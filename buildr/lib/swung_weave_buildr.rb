@@ -46,6 +46,20 @@ module Buildr
     def swung_weave_enhance
       SwungWeave.enhance(compile.target.to_s)
     end
+
+    def swung_weave(buildr_project = nil)
+      if buildr_project.nil? && Buildr.application.current_scope.size > 0
+        buildr_project = Buildr.project(Buildr.application.current_scope.join(':'))
+      end
+
+      if buildr_project.iml?
+        buildr_project.iml.add_facet('SwungWeave', 'SwungWeave') do |facet|
+          facet.configuration
+        end
+      end
+      buildr_project.compile { buildr_project.swung_weave_enhance }
+      buildr_project.compile.with Buildr::SwungWeave.dependencies
+    end
   end
 end
 
