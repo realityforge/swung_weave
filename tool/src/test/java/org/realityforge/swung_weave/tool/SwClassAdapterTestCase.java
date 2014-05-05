@@ -21,7 +21,7 @@ import org.testng.annotations.Test;
 
 public class SwClassAdapterTestCase
 {
-  private static Class c_clazz;
+  private static Class<?> c_clazz;
 
   @BeforeClass
   public static void adaptClass()
