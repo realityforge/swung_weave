@@ -79,7 +79,7 @@ public class SwungWeaveModuleComponent
 
   public void moduleAdded()
   {
-    // TODO add logging
+    LOG.info( "SwungWeave activating for " + _module.getName() + " module." );
     final Project project = _module.getProject();
     final CompilerManager compilerManager = CompilerManager.getInstance( project );
     compilerManager.addAfterTask( new CompileTask()
