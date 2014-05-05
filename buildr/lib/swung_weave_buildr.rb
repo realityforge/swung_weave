@@ -36,9 +36,9 @@ module Buildr
 
       def dependencies
         [
+          # We do not need asm as it is merged into the tool jar
           self.api_artifact,
-          "#{GROUP}:swung-weave-tool:jar:#{VERSION}",
-          ASM_ARTIFACT
+          "#{GROUP}:swung-weave-tool:jar:#{VERSION}"
         ]
       end
     end

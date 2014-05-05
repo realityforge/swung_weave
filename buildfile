@@ -56,7 +56,6 @@ module Buildr
   module SwungWeave
     private
       VERSION='#{project.version}'
-      ASM_ARTIFACT='#{artifact(:asm).to_spec}'
       GROUP='#{project.group}'
   end
 end
