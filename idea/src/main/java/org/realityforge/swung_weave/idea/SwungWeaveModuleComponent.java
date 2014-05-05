@@ -74,7 +74,7 @@ public class SwungWeaveModuleComponent
 
   public void projectClosed()
   {
-    // TODO: Should we call _module.dispose()?
+    // Nothing to to here
   }
 
   public void moduleAdded()
