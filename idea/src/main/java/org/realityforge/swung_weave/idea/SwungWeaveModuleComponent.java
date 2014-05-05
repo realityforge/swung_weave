@@ -80,8 +80,7 @@ public class SwungWeaveModuleComponent
   public void moduleAdded()
   {
     LOG.info( "SwungWeave activating for " + _module.getName() + " module." );
-    final Project project = _module.getProject();
-    final CompilerManager compilerManager = CompilerManager.getInstance( project );
+    final CompilerManager compilerManager = CompilerManager.getInstance( _module.getProject() );
     compilerManager.addAfterTask( new CompileTask()
     {
       @Override
