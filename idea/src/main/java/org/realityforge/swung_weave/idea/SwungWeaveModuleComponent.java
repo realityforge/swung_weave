@@ -111,16 +111,14 @@ public class SwungWeaveModuleComponent
 
   private boolean hasSwungWeaveFacet()
   {
-    boolean hasSwungWeaveFacet = false;
     for ( final Facet facet : _facetManager.getAllFacets() )
     {
       if ( facet instanceof SwungWeaveFacet )
       {
-        hasSwungWeaveFacet = true;
-        break;
+        return true;
       }
     }
-    return hasSwungWeaveFacet;
+    return false;
   }
 
   /**
