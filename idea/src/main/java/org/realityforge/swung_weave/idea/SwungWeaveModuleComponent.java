@@ -9,13 +9,12 @@ import com.intellij.openapi.compiler.CompilerMessageCategory;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleComponent;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ProjectRootsTraversing;
+import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.util.PathsList;
-import com.intellij.util.lang.UrlClassLoader;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
@@ -38,6 +37,9 @@ public class SwungWeaveModuleComponent
   implements ModuleComponent
 {
   private static final Logger LOG = Logger.getInstance( SwungWeaveModuleComponent.class.getName() );
+
+  private static final boolean USE_CLASSLOADER =
+    System.getProperty( "SwungWeave.useClassLoader", "true" ).equals( "true" );
 
   private static final String COMPONENT_NAME = "SwingWeave Module Enhancer Component";
 
@@ -175,18 +177,30 @@ public class SwungWeaveModuleComponent
 
       try
       {
-        invokeMain( compileContext, args.toArray( new String[ args.size() ] ) );
+        if ( USE_CLASSLOADER )
+        {
+          invokeMain( compileContext, args.toArray( new String[ args.size() ] ) );
+        }
+        else
+        {
+          invokeViaCLI( compileContext, baseDir, args );
+        }
       }
-      catch ( Throwable t )
+      catch ( final Throwable t )
       {
+        final Throwable target;
         if ( t instanceof InvocationTargetException )
         {
-          t = t.getCause();
+          target = t.getCause();
+        }
+        else
+        {
+          target = t;
         }
 
         compileContext.addMessage( CompilerMessageCategory.ERROR,
-                                   "An unexpected error of type " + t.getClass().getName() +
-                                   " occurred in the SwungWeave plugin. Message: " + toString( t ),
+                                   "An unexpected error of type " + target.getClass().getName() +
+                                   " occurred in the SwungWeave plugin. Message: " + toString( target ),
                                    null,
                                    -1,
                                    -1
@@ -197,19 +211,65 @@ public class SwungWeaveModuleComponent
     return true;
   }
 
-  private void invokeMain( final CompileContext context, final String[] args )
-    throws NoSuchMethodException, IllegalAccessException,
-           InvocationTargetException, IOException, InstantiationException
+  private void invokeViaCLI( final CompileContext context, final String baseDir, final List<String> args )
+    throws Exception
   {
-    final URLClassLoader loader = newClassLoader( context, _module );
+    final StringBuilder sb = new StringBuilder();
+    sb.append( "java -cp " );
+    sb.append( baseDir );
+
+    for ( final File entry : getSwungWeaveClasspath(context ) )
+    {
+        context.addMessage( CompilerMessageCategory.ERROR, "CP Path: " + entry.getPath(), null, -1, -1 );
+        context.addMessage( CompilerMessageCategory.ERROR, "CP Absolute: " + entry.getAbsolutePath(), null, -1, -1 );
+
+      sb.append( File.pathSeparator );
+      sb.append( entry.getAbsolutePath() );
+    }
+
+    sb.append( " " );
+    sb.append( MAIN_CLASS_NAME );
+    for ( final String arg : args )
+    {
+      sb.append( " " );
+      sb.append( arg );
+    }
+    final String command = sb.toString();
+    final Process process = Runtime.getRuntime().exec( command );
+    process.getOutputStream().close();
+    final BufferedReader errorStream = new BufferedReader( new InputStreamReader(process.getErrorStream()) );
+    final StringBuilder sb2 = new StringBuilder();
+    String output = errorStream.readLine();
+    while( null != output)
+    {
+      sb2.append( output );
+      output = errorStream.readLine();
+    }
+
+    final int exitCode = process.waitFor();
+    if ( 0 != exitCode )
+    {
+      context.addMessage( CompilerMessageCategory.ERROR,
+                          "Failed to execute command in " + _module.getName() + " " + exitCode + "\nError =\n" + sb2 +
+                          "\nCommand =\n" + command + "\n",
+                          null,
+                          -1,
+                          -1 );
+    }
+  }
+
+  private void invokeMain( final CompileContext context, final String[] args )
+    throws Exception
+  {
     final ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
-    Thread.currentThread().setContextClassLoader( loader );
 
     context.addMessage( CompilerMessageCategory.INFORMATION,
                         "Enhancing " + _module.getName() + " classes.",
                         null,
                         -1,
                         -1 );
+    final URLClassLoader loader = newClassLoader(context );
+    Thread.currentThread().setContextClassLoader( loader );
     try
     {
       final Class<?> mainClass = loader.loadClass( MAIN_CLASS_NAME );
@@ -245,36 +305,30 @@ public class SwungWeaveModuleComponent
     return out.toString();
   }
 
-  /**
-   * <p>Creates a new {@link ClassLoader} that includes all the module jars
-   * and output dirs in the current compile context, and all the jars
-   * in the current classloader. Since the returned classloader does
-   * not actually delegate to the classloader of this class,
-   * non-bootstrap instances cannot be shared between instances from
-   * the classloader returned by this call and the current instance.</p>
-   * <p/>
-   * (Note: this method is copied from the OpenJPA project with some minor modifications.)
-   */
-  private URLClassLoader newClassLoader( final CompileContext context, final Module module )
+  private URLClassLoader newClassLoader(final CompileContext context)
     throws IOException
   {
     final Collection<URL> urls = new LinkedList<URL>();
-
-    final UrlClassLoader loader = (UrlClassLoader) getClass().getClassLoader();
-    urls.addAll( loader.getUrls() );
-
-    for ( final VirtualFile vf : context.getAllOutputDirectories() )
+    for ( final File file : getSwungWeaveClasspath(context ) )
     {
-      urls.add( new File( vf.getPath() ).getCanonicalFile().toURI().toURL() );
+      urls.add( file.toURI().toURL() );
     }
+    return new URLClassLoader( urls.toArray( new URL[ urls.size() ] ), null );
+  }
 
-    final PathsList paths = ProjectRootsTraversing.collectRoots( module, ProjectRootsTraversing.PROJECT_LIBRARIES );
-    for ( final VirtualFile vf : paths.getVirtualFiles() )
+  private LinkedList<File> getSwungWeaveClasspath(final CompileContext context)
+  {
+    final LinkedList<File> files = new LinkedList<File>();
+    for ( final VirtualFile vf : ModuleRootManager.getInstance( _module ).orderEntries().classes().getRoots() )
     {
-      final File f = new File( vf.getPath() );
-      urls.add( f.toURI().toURL() );
+      final String path = vf.getPath();
+      if ( path.contains( "/swung-weave/" ) )
+      {
+        //Strip out !/ suffix - not sure why it is there.
+        final String cleanPath = path.endsWith( "!/" ) ? path.substring( 0, path.length() - 2 ) : path;
+        files.add( new File( cleanPath ) );
+      }
     }
-
-    return new URLClassLoader( urls.toArray( new URL[urls.size()] ) );
+    return files;
   }
 }
