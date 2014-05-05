@@ -223,7 +223,7 @@ public class SwungWeaveModuleComponent
                         -1 );
     try
     {
-      final Class mainClass = loader.loadClass( MAIN_CLASS_NAME );
+      final Class<?> mainClass = loader.loadClass( MAIN_CLASS_NAME );
       final Object main = mainClass.newInstance();
       final Method runMethod = mainClass.getDeclaredMethod( RUN_METHOD_NAME, String[].class );
       runMethod.invoke( main, new Object[]{ args } );
