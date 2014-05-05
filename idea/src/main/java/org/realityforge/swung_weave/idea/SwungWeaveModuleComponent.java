@@ -16,6 +16,8 @@ import com.intellij.util.PathsList;
 import com.intellij.util.lang.UrlClassLoader;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -184,12 +186,11 @@ public class SwungWeaveModuleComponent
 
         compileContext.addMessage( CompilerMessageCategory.ERROR,
                                    "An unexpected error of type " + t.getClass().getName() +
-                                   " occurred in the SwungWeave plugin. Message: " + t.getMessage(),
+                                   " occurred in the SwungWeave plugin. Message: " + toString( t ),
                                    null,
                                    -1,
                                    -1
         );
-        t.printStackTrace(); // TODO need better logging
         return false;
       }
     }
@@ -203,15 +204,6 @@ public class SwungWeaveModuleComponent
     final URLClassLoader loader = newClassLoader( context, _module );
     final ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader( loader );
-
-    final StringBuilder classPathInfo = new StringBuilder();
-    classPathInfo.append( _module.getName() ).append( "'s class path is:\n" );
-    for ( final URL url : loader.getURLs() )
-    {
-      classPathInfo.append( "\n\t" ).append( url.toString() );
-    }
-
-    LOG.info( classPathInfo.toString() );
 
     context.addMessage( CompilerMessageCategory.INFORMATION,
                         "Enhancing " + _module.getName() + " classes.",
@@ -227,12 +219,30 @@ public class SwungWeaveModuleComponent
     }
     catch ( final ClassNotFoundException cnfe )
     {
-      LOG.error( cnfe );
+      final StringBuilder classPathInfo = new StringBuilder();
+      classPathInfo.append( _module.getName() ).append( "'s class path is:\n" );
+      for ( final URL url : loader.getURLs() )
+      {
+        classPathInfo.append( "\n\t" ).append( url.toString() );
+      }
+
+      final String message =
+        "Unable to locate SwungWeave compiler in " + _module.getName() + "'s dependencies.\n" +
+        "Due to:\n" + toString( cnfe ) + "\n" +
+        "Classpath Details: " + classPathInfo;
+      context.addMessage( CompilerMessageCategory.ERROR, message, null, -1, -1 );
     }
     finally
     {
       Thread.currentThread().setContextClassLoader( oldLoader );
     }
+  }
+
+  private String toString( final Throwable t )
+  {
+    final StringWriter out = new StringWriter();
+    t.printStackTrace( new PrintWriter( out ) );
+    return out.toString();
   }
 
   /**
