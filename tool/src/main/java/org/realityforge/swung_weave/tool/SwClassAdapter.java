@@ -4,16 +4,15 @@ import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 import org.objectweb.asm.AnnotationVisitor;
-import org.objectweb.asm.ClassAdapter;
+import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodAdapter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
 final class SwClassAdapter
-  extends ClassAdapter
+  extends ClassVisitor
 {
   private static final String GENERATED_ACCESSOR_PREFIX = "sw_access$";
 
@@ -24,7 +23,7 @@ final class SwClassAdapter
 
   public SwClassAdapter( final ClassWriter cw )
   {
-    super( cw );
+    super( Opcodes.ASM5, cw );
   }
 
   public Map<String, byte[]> getClassData()
@@ -68,7 +67,7 @@ final class SwClassAdapter
     final Type returnType = Type.getReturnType( desc );
     final MethodVisitor v = cv.visitMethod( access, methodName, desc, signature, exceptions );
 
-    return new MethodAdapter( v )
+    return new MethodVisitor( Opcodes.ASM5, v )
     {
       private boolean _requiresEDT;
       private boolean _disallowsEDT;
@@ -180,11 +179,12 @@ final class SwClassAdapter
           index += isDoubleSlot( type ) ? 1 : 0;
         }
         final String helperConstructorDesc = "(" + paramDesc + ")V";
-        mv.visitMethodInsn( Opcodes.INVOKESPECIAL, helperClass, "<init>", helperConstructorDesc );
+        mv.visitMethodInsn( Opcodes.INVOKESPECIAL, helperClass, "<init>", helperConstructorDesc, false );
         mv.visitMethodInsn( Opcodes.INVOKESTATIC,
                             "org/realityforge/swung_weave/DispatchUtil",
                             toEDT ? "invokeInEDT" : "invokeOutsideEDT",
-                            "(Ljava/util/concurrent/Callable;)Ljava/lang/Object;" );
+                            "(Ljava/util/concurrent/Callable;)Ljava/lang/Object;",
+                            false );
         genReturn( mv, returnType );
         mv.visitLabel( end );
 
@@ -224,7 +224,7 @@ final class SwClassAdapter
                                                    null,
                                                    null );
         ctor.visitVarInsn( Opcodes.ALOAD, 0 );
-        ctor.visitMethodInsn( Opcodes.INVOKESPECIAL, "java/lang/Object", "<init>", "()V" );
+        ctor.visitMethodInsn( Opcodes.INVOKESPECIAL, "java/lang/Object", "<init>", "()V", false );
 
         parameterID = 0;
         index = 0;
@@ -289,7 +289,7 @@ final class SwClassAdapter
         {
           targetMethodName = methodName;
         }
-        callMethod.visitMethodInsn( invokeOpcode( access ), _classname, targetMethodName, desc );
+        callMethod.visitMethodInsn( invokeOpcode( access ), _classname, targetMethodName, desc, false );
         final int sort = returnType.getSort();
         if( Type.VOID == sort )
         {
@@ -297,35 +297,35 @@ final class SwClassAdapter
         }
         else if( Type.BOOLEAN == sort )
         {
-          callMethod.visitMethodInsn( Opcodes.INVOKESTATIC, "java/lang/Boolean", "valueOf", "(Z)Ljava/lang/Boolean;" );
+          callMethod.visitMethodInsn( Opcodes.INVOKESTATIC, "java/lang/Boolean", "valueOf", "(Z)Ljava/lang/Boolean;", false );
         }
         else if( Type.BYTE == sort )
         {
-          callMethod.visitMethodInsn( Opcodes.INVOKESTATIC, "java/lang/Byte", "valueOf", "(B)Ljava/lang/Byte;" );
+          callMethod.visitMethodInsn( Opcodes.INVOKESTATIC, "java/lang/Byte", "valueOf", "(B)Ljava/lang/Byte;", false );
         }
         else if( Type.CHAR == sort)
         {
-          callMethod.visitMethodInsn( Opcodes.INVOKESTATIC, "java/lang/Character", "valueOf", "(C)Ljava/lang/Character;" );
+          callMethod.visitMethodInsn( Opcodes.INVOKESTATIC, "java/lang/Character", "valueOf", "(C)Ljava/lang/Character;", false );
         }
         else if( Type.SHORT == sort )
         {
-          callMethod.visitMethodInsn( Opcodes.INVOKESTATIC, "java/lang/Short", "valueOf", "(S)Ljava/lang/Short;" );
+          callMethod.visitMethodInsn( Opcodes.INVOKESTATIC, "java/lang/Short", "valueOf", "(S)Ljava/lang/Short;", false );
         }
         else if( Type.INT == sort )
         {
-          callMethod.visitMethodInsn( Opcodes.INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;" );
+          callMethod.visitMethodInsn( Opcodes.INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;", false );
         }
         else if( Type.LONG == sort )
         {
-          callMethod.visitMethodInsn( Opcodes.INVOKESTATIC, "java/lang/Long", "valueOf", "(J)Ljava/lang/Long;" );
+          callMethod.visitMethodInsn( Opcodes.INVOKESTATIC, "java/lang/Long", "valueOf", "(J)Ljava/lang/Long;", false );
         }
         else if( Type.FLOAT == sort )
         {
-          callMethod.visitMethodInsn( Opcodes.INVOKESTATIC, "java/lang/Float", "valueOf", "(F)Ljava/lang/Float;" );
+          callMethod.visitMethodInsn( Opcodes.INVOKESTATIC, "java/lang/Float", "valueOf", "(F)Ljava/lang/Float;", false );
         }
         else if( Type.DOUBLE == sort )
         {
-          callMethod.visitMethodInsn( Opcodes.INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;" );
+          callMethod.visitMethodInsn( Opcodes.INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;", false );
         }
         else //OBJECT and arrays
         {
@@ -361,7 +361,7 @@ final class SwClassAdapter
         }
 
         final int invokeOpcode = invokeOpcode( access );
-        accessorMethod.visitMethodInsn( invokeOpcode, _classname, methodName, desc );
+        accessorMethod.visitMethodInsn( invokeOpcode, _classname, methodName, desc, false );
         final int sort = returnType.getSort();
         if ( Type.VOID == sort )
         {
@@ -423,7 +423,8 @@ final class SwClassAdapter
     mv.visitMethodInsn( Opcodes.INVOKESTATIC,
                         "java/awt/EventQueue",
                         "isDispatchThread",
-                        "()Z" );
+                        "()Z",
+                        false);
   }
 
   static void genIllegalStateException( final MethodVisitor mv,
@@ -433,7 +434,7 @@ final class SwClassAdapter
     mv.visitTypeInsn( Opcodes.NEW, exception );
     mv.visitInsn( Opcodes.DUP );
     mv.visitLdcInsn( message );
-    mv.visitMethodInsn( Opcodes.INVOKESPECIAL, exception, "<init>", "(Ljava/lang/String;)V" );
+    mv.visitMethodInsn( Opcodes.INVOKESPECIAL, exception, "<init>", "(Ljava/lang/String;)V", false );
     mv.visitInsn( Opcodes.ATHROW );
     mv.visitInsn( Opcodes.RETURN );
   }
@@ -450,49 +451,49 @@ final class SwClassAdapter
     else if( Type.BOOLEAN == sort )
     {
       mv.visitTypeInsn( Opcodes.CHECKCAST, "java/lang/Boolean" );
-      mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL, "java/lang/Boolean", "booleanValue", "()Z" );
+      mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL, "java/lang/Boolean", "booleanValue", "()Z", false );
       mv.visitInsn( Opcodes.IRETURN );
     }
     else if( Type.BYTE == sort )
     {
       mv.visitTypeInsn( Opcodes.CHECKCAST, "java/lang/Byte" );
-      mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL, "java/lang/Byte", "byteValue", "()B" );
+      mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL, "java/lang/Byte", "byteValue", "()B", false );
       mv.visitInsn( Opcodes.IRETURN );
     }
     else if( Type.CHAR == sort)
     {
       mv.visitTypeInsn( Opcodes.CHECKCAST, "java/lang/Character" );
-      mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL, "java/lang/Character", "charValue", "()C" );
+      mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL, "java/lang/Character", "charValue", "()C", false );
       mv.visitInsn( Opcodes.IRETURN );
     }
     else if( Type.SHORT == sort )
     {
       mv.visitTypeInsn( Opcodes.CHECKCAST, "java/lang/Short" );
-      mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL, "java/lang/Short", "shortValue", "()S" );
+      mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL, "java/lang/Short", "shortValue", "()S", false );
       mv.visitInsn( Opcodes.IRETURN );
     }
     else if( Type.INT == sort )
     {
       mv.visitTypeInsn( Opcodes.CHECKCAST, "java/lang/Integer" );
-      mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL, "java/lang/Integer", "intValue", "()I" );
+      mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL, "java/lang/Integer", "intValue", "()I", false );
       mv.visitInsn( Opcodes.IRETURN );
     }
     else if( Type.LONG == sort )
     {
       mv.visitTypeInsn( Opcodes.CHECKCAST, "java/lang/Long" );
-      mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL, "java/lang/Long", "longValue", "()J" );
+      mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL, "java/lang/Long", "longValue", "()J", false );
       mv.visitInsn( Opcodes.LRETURN );
     }
     else if( Type.FLOAT == sort )
     {
       mv.visitTypeInsn( Opcodes.CHECKCAST, "java/lang/Float" );
-      mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL, "java/lang/Float", "floatValue", "()F" );
+      mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL, "java/lang/Float", "floatValue", "()F", false );
       mv.visitInsn( Opcodes.FRETURN );
     }
     else if( Type.DOUBLE == sort )
     {
       mv.visitTypeInsn( Opcodes.CHECKCAST, "java/lang/Double" );
-      mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL, "java/lang/Double", "doubleValue", "()D" );
+      mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL, "java/lang/Double", "doubleValue", "()D", false );
       mv.visitInsn( Opcodes.DRETURN );
     }
     else //OBJECT and arrays

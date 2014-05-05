@@ -3,6 +3,6 @@ repositories:
    - http://repo.fire.dse.vic.gov.au/content/groups/fisg
 
 artifacts:
-  asm: asm:asm-all:jar:3.3
+  asm: org.ow2.asm:asm-all:jar:5.0.2
   jdom: org.jdom:jdom:jar:1.1
 
