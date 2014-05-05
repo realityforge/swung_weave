@@ -10,6 +10,11 @@ define 'swung-weave' do
   compile.options.target = '1.6'
   compile.options.lint = 'all'
 
+  pom.add_apache2_license
+  pom.add_github_project('realityforge/swung_weave')
+  pom.add_developer('realityforge', 'Peter Donald')
+  pom.add_developer('behrangsa', 'Behrang Saeedzadeh')
+
   ipr.extra_modules << 'idea/idea.iml'
 
   desc 'SwungWeave: API and Annotations'
@@ -24,8 +29,10 @@ define 'swung-weave' do
 
   desc 'SwungWeave: Bytecode weaver tool'
   define 'tool' do
+    pom.provided_dependencies.concat [:asm]
     compile.with :asm, projects('api')
     test.using :testng
+    package(:sources)
     package(:bundle).tap do |bnd|
       bnd['Export-Package'] = "org.realityforge.swung_weave.tool.*;version=#{version}"
       bnd['Private-Package'] = 'org.objectweb.asm.*'
