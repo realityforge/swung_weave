@@ -1,5 +1,5 @@
 def lib_to_spec(lib)
-  "com.intellij.idea:#{lib}:jar:#{OPENAPI_VERSION}"
+  "org.jetbrains.intellij:intellij-#{lib}:jar:#{OPENAPI_VERSION}"
 end
 
 OPENAPI_VERSION='13.1.2'
