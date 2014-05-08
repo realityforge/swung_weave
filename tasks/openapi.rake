@@ -8,7 +8,7 @@ OPENAPI = OPENAPI_LIBS.collect{|lib| lib_to_spec(lib)}
 
 desc 'Upload required OpenAPI jars to repository from local IDEA installation.'
 task 'openapi:upload' do
-  env_key = "IDEA_HOME_#{OPENAPI_VERSION}"
+  env_key = "IDEA_HOME_#{OPENAPI_VERSION.gsub('.','_')}"
   raise "Must define the '#{env_key}' environment variable" unless ENV[env_key]
   raise "The '#{env_key}' environment variable must point at a directory that exists" unless File.directory?(ENV[env_key])
 
