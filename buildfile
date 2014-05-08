@@ -25,6 +25,7 @@ define 'swung-weave' do
       bnd['Export-Package'] = "org.realityforge.swung_weave.*;version=#{version}"
     end
     package(:sources)
+    package(:javadoc)
   end
 
   desc 'SwungWeave: Bytecode weaver tool'
@@ -37,6 +38,7 @@ define 'swung-weave' do
       bnd['Export-Package'] = "org.realityforge.swung_weave.tool.*;version=#{version}"
       bnd['Private-Package'] = 'org.objectweb.asm.*'
     end
+    package(:javadoc)
   end
 
   desc 'SwungWeave: IntelliJ IDEA plugin'
