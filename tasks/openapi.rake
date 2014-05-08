@@ -3,7 +3,7 @@ def lib_to_spec(lib)
 end
 
 OPENAPI_VERSION='13.1.2'
-OPENAPI_LIBS = ['openapi', 'idea_rt' , 'extensions', 'util', 'annotations']
+OPENAPI_LIBS = ['openapi', 'util', 'extensions', 'annotations']
 OPENAPI = OPENAPI_LIBS.collect{|lib| lib_to_spec(lib)}
 
 desc 'Upload required OpenAPI jars to repository from local IDEA installation.'
