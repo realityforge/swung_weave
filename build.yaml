@@ -1,6 +1,7 @@
 repositories:
   remote:
    - http://repo1.maven.org/maven2
+   - https://github.com/realityforge/repository/raw/master/
 
 artifacts:
   asm: org.ow2.asm:asm-all:jar:5.0.2

@@ -1,5 +1,5 @@
-task "ci:setup" do
+task 'ci:setup' do
   ENV['TEST'] = 'all'
 end
 
-task "ci:package" => %w(ci:setup clean package doc)
+task 'ci:package' => %w(ci:setup clean package doc)
