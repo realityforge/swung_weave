@@ -133,20 +133,24 @@ final class SwClassAdapter
         {
           genIsDispatchThreadInvoke( mv );
           final Label end = new Label();
+          mv.visitFrame( Opcodes.F_SAME1, 0, new Object[0], 1, new Object[]{Opcodes.INTEGER} );
           mv.visitJumpInsn( Opcodes.IFNE, end );
           genIllegalStateException( mv,
                                     "Method " + methodName + " must only be " +
                                     "invoked in the Event Dispatch Thread." );
+          mv.visitFrame(Opcodes.F_SAME,0, new Object[0] , 0, null);
           mv.visitLabel( end );
         }
         if( _disallowsEDT )
         {
           genIsDispatchThreadInvoke( mv );
           final Label end = new Label();
+          mv.visitFrame( Opcodes.F_SAME1, 0, new Object[0], 1, new Object[]{Opcodes.INTEGER} );
           mv.visitJumpInsn( Opcodes.IFEQ, end );
           genIllegalStateException( mv,
                                     "Method " + methodName + " must not be " +
                                     "invoked in the Event Dispatch Thread." );
+          mv.visitFrame(Opcodes.F_SAME,0, new Object[0] , 0, null);
           mv.visitLabel( end );
         }
       }
@@ -155,6 +159,7 @@ final class SwClassAdapter
       {
         genIsDispatchThreadInvoke( mv );
         final Label end = new Label();
+        mv.visitFrame( Opcodes.F_SAME1, 0, new Object[0], 1, new Object[]{Opcodes.INTEGER} );
         mv.visitJumpInsn( toEDT ? Opcodes.IFNE : Opcodes.IFEQ, end );
         _adapterCount += 1;
         final String helperClass =
@@ -186,6 +191,7 @@ final class SwClassAdapter
                             "(Ljava/util/concurrent/Callable;)Ljava/lang/Object;",
                             false );
         genReturn( mv, returnType );
+        mv.visitFrame(Opcodes.F_SAME,0, new Object[0] , 0, null);
         mv.visitLabel( end );
 
         final ClassWriter cw = new ClassWriter( ClassWriter.COMPUTE_FRAMES );
@@ -435,6 +441,7 @@ final class SwClassAdapter
     mv.visitInsn( Opcodes.DUP );
     mv.visitLdcInsn( message );
     mv.visitMethodInsn( Opcodes.INVOKESPECIAL, exception, "<init>", "(Ljava/lang/String;)V", false );
+    mv.visitFrame( Opcodes.F_SAME1, 0, new Object[0], 1, new Object[]{"java/lang/IllegalStateException"} );
     mv.visitInsn( Opcodes.ATHROW );
   }
 
