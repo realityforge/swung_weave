@@ -218,10 +218,10 @@ public class SwungWeaveModuleComponent
     sb.append( "java -cp " );
     sb.append( baseDir );
 
-    for ( final File entry : getSwungWeaveClasspath(context ) )
+    for ( final File entry : getSwungWeaveClasspath( context ) )
     {
-        context.addMessage( CompilerMessageCategory.ERROR, "CP Path: " + entry.getPath(), null, -1, -1 );
-        context.addMessage( CompilerMessageCategory.ERROR, "CP Absolute: " + entry.getAbsolutePath(), null, -1, -1 );
+      context.addMessage( CompilerMessageCategory.ERROR, "CP Path: " + entry.getPath(), null, -1, -1 );
+      context.addMessage( CompilerMessageCategory.ERROR, "CP Absolute: " + entry.getAbsolutePath(), null, -1, -1 );
 
       sb.append( File.pathSeparator );
       sb.append( entry.getAbsolutePath() );
@@ -237,10 +237,10 @@ public class SwungWeaveModuleComponent
     final String command = sb.toString();
     final Process process = Runtime.getRuntime().exec( command );
     process.getOutputStream().close();
-    final BufferedReader errorStream = new BufferedReader( new InputStreamReader(process.getErrorStream()) );
+    final BufferedReader errorStream = new BufferedReader( new InputStreamReader( process.getErrorStream() ) );
     final StringBuilder sb2 = new StringBuilder();
     String output = errorStream.readLine();
-    while( null != output)
+    while ( null != output )
     {
       sb2.append( output );
       output = errorStream.readLine();
@@ -254,7 +254,8 @@ public class SwungWeaveModuleComponent
                           "\nCommand =\n" + command + "\n",
                           null,
                           -1,
-                          -1 );
+                          -1
+      );
     }
   }
 
@@ -268,7 +269,7 @@ public class SwungWeaveModuleComponent
                         null,
                         -1,
                         -1 );
-    final URLClassLoader loader = newClassLoader(context );
+    final URLClassLoader loader = newClassLoader( context );
     Thread.currentThread().setContextClassLoader( loader );
     try
     {
@@ -305,18 +306,18 @@ public class SwungWeaveModuleComponent
     return out.toString();
   }
 
-  private URLClassLoader newClassLoader(final CompileContext context)
+  private URLClassLoader newClassLoader( final CompileContext context )
     throws IOException
   {
     final Collection<URL> urls = new LinkedList<URL>();
-    for ( final File file : getSwungWeaveClasspath(context ) )
+    for ( final File file : getSwungWeaveClasspath( context ) )
     {
       urls.add( file.toURI().toURL() );
     }
     return new URLClassLoader( urls.toArray( new URL[ urls.size() ] ), null );
   }
 
-  private LinkedList<File> getSwungWeaveClasspath(final CompileContext context)
+  private LinkedList<File> getSwungWeaveClasspath( final CompileContext context )
   {
     final LinkedList<File> files = new LinkedList<File>();
     for ( final VirtualFile vf : ModuleRootManager.getInstance( _module ).orderEntries().classes().getRoots() )
