@@ -436,7 +436,6 @@ final class SwClassAdapter
     mv.visitLdcInsn( message );
     mv.visitMethodInsn( Opcodes.INVOKESPECIAL, exception, "<init>", "(Ljava/lang/String;)V", false );
     mv.visitInsn( Opcodes.ATHROW );
-    mv.visitInsn( Opcodes.RETURN );
   }
 
   static void genReturn( final MethodVisitor mv,
