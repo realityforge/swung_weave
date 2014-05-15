@@ -188,7 +188,7 @@ final class SwClassAdapter
         genReturn( mv, returnType );
         mv.visitLabel( end );
 
-        final ClassWriter cw = new ClassWriter( ClassWriter.COMPUTE_MAXS );
+        final ClassWriter cw = new ClassWriter( ClassWriter.COMPUTE_FRAMES );
         cw.visit( Opcodes.V1_1,
                   Opcodes.ACC_FINAL | Opcodes.ACC_SYNTHETIC,
                   helperClass,
