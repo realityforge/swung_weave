@@ -323,12 +323,9 @@ public class SwungWeaveModuleComponent
     for ( final VirtualFile vf : ModuleRootManager.getInstance( _module ).orderEntries().classes().getRoots() )
     {
       final String path = vf.getPath();
-      if ( path.contains( "/swung-weave/" ) )
-      {
-        //Strip out !/ suffix - not sure why it is there.
-        final String cleanPath = path.endsWith( "!/" ) ? path.substring( 0, path.length() - 2 ) : path;
-        files.add( new File( cleanPath ) );
-      }
+      //Strip out !/ suffix - not sure why it is there.
+      final String cleanPath = path.endsWith( "!/" ) ? path.substring( 0, path.length() - 2 ) : path;
+      files.add( new File( cleanPath ) );
     }
     return files;
   }
