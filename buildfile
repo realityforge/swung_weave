@@ -7,8 +7,8 @@ require 'buildr/gpg'
 desc 'SwungWeave: Bytecode weaver to simplify Swing UI code'
 define 'swung-weave' do
   project.group = 'org.realityforge.swung-weave'
-  compile.options.source = '1.6'
-  compile.options.target = '1.6'
+  compile.options.source = '1.7'
+  compile.options.target = '1.7'
   compile.options.lint = 'all'
 
   pom.add_apache_v2_license
