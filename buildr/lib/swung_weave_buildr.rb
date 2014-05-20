@@ -10,7 +10,7 @@ module Buildr
         "#{GROUP}:swung-weave-api:jar:#{VERSION}"
       end
 
-      def enhance(dir)
+      def enhance(dir, dependencies)
         cp = Buildr.artifacts(dependencies).each(&:invoke).map(&:to_s)
         tf = Tempfile.open('swung_weave')
         begin
@@ -44,7 +44,7 @@ module Buildr
     end
 
     def swung_weave_enhance
-      SwungWeave.enhance(compile.target.to_s)
+      SwungWeave.enhance(compile.target.to_s, compile.dependencies)
     end
 
     def swung_weave(buildr_project = nil)
