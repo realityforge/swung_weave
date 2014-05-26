@@ -106,6 +106,11 @@ public class Main
       error( "Problem reading file: " + filename, ioe );
       return false;
     }
+    catch ( final Throwable t )
+    {
+      error( "Problem processing file: " + filename, t );
+      return false;
+    }
 
     if ( !adapter.matchedAnnotations() )
     {
