@@ -29,11 +29,6 @@ module Buildr
         end
       end
 
-      # Repositories containing the requirements
-      def remote_repository
-        'http://www.stocksoftware.com.au/repositories/releases'
-      end
-
       def dependencies
         [
           # We do not need asm as it is merged into the tool jar
