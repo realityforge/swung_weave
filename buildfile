@@ -88,7 +88,7 @@ TEXT
         spec.has_rdoc         = false
       end
       gem.include :from => _('lib'), :path => 'lib'
-      gem.include ['LICENSE', 'README.rdoc', 'NOTICE']
+      gem.include ['LICENSE', 'README.md', 'NOTICE']
       gem.include generated_file, :as => 'lib/buildr/swung_weave/version.rb'
       gem.prerequisites << generated_file
     end
