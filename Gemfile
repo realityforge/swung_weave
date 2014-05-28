@@ -1,5 +1,5 @@
 ruby '1.9.3'
 
-source 'http://repo.fire.dse.vic.gov.au/content/repositories/rubygems'
+source 'https://rubygems.org'
 
-gem 'buildr', '= 1.4.16'
+gem 'buildr', '= 1.4.17'
