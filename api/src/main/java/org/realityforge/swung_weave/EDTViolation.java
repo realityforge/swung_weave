@@ -3,7 +3,7 @@ package org.realityforge.swung_weave;
 import javax.swing.JComponent;
 
 /**
- * Representation of EDT violation.  
+ * Representation of EDT violation.
  */
 public final class EDTViolation
 {

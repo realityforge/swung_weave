@@ -310,4 +310,3 @@ public class SwClassAdapterTestCase
                                    expectedExceptionMessage ) );
   }
 }
-

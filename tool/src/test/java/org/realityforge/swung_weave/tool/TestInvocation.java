@@ -4,7 +4,7 @@ import org.testng.Assert;
 
 /**
  * Note: Many fields are public as they are accessed from within a different class loader
- * and if they are not public they will generate IllegalAccessError exceptions. 
+ * and if they are not public they will generate IllegalAccessError exceptions.
  */
 public final class TestInvocation
 {

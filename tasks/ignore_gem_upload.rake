@@ -6,4 +6,3 @@ module Buildr
     end
   end
 end
-
