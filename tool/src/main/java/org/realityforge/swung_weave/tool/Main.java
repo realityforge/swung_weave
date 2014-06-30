@@ -95,7 +95,7 @@ public class Main
     try
     {
       final FileInputStream inputStream = new FileInputStream( filename );
-      cw = new ClassWriter( ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS );
+      cw = new ClassWriter( ClassWriter.COMPUTE_MAXS );
       final ClassReader cr = new ClassReader( inputStream );
       adapter = new SwClassAdapter( cw );
       cr.accept( adapter, 0 );

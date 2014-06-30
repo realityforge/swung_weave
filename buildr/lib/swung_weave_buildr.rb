@@ -11,7 +11,7 @@ module Buildr
       end
 
       def enhance(dir, dependencies)
-        cp = Buildr.artifacts(dependencies).each(&:invoke).map(&:to_s)
+        cp = [dir] + Buildr.artifacts(dependencies).each(&:invoke).map(&:to_s)
         tf = Tempfile.open('swung_weave')
         begin
           tf << Dir["#{dir}/**/*.class"].join("\n")
@@ -24,7 +24,7 @@ module Buildr
           args << "--debug" if Buildr.application.options.trace
 
           Java::Commands.java 'org.realityforge.swung_weave.tool.Main', *(args + [{:classpath => cp}])
-        rescue
+        ensure
           tf.close!
         end
       end
