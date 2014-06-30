@@ -5,6 +5,4 @@
 /*.ipr
 *.iml
 /_buildr.rb
-/bin
-/.bundle
 /Gemfile.lock
