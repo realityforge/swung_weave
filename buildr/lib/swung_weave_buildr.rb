@@ -24,7 +24,7 @@ module Buildr
           args << "--debug" if Buildr.application.options.trace
 
           Java::Commands.java 'org.realityforge.swung_weave.tool.Main', *(args + [{:classpath => cp}])
-        rescue
+        ensure
           tf.close!
         end
       end
