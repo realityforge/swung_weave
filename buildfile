@@ -35,11 +35,11 @@ define 'swung-weave' do
     pom.provided_dependencies.concat [:asm]
     compile.with :asm, projects('api')
     test.using :testng
-    package(:sources)
     package(:bundle).tap do |bnd|
       bnd['Export-Package'] = "org.realityforge.swung_weave.tool.*;version=#{version}"
       bnd['Private-Package'] = 'org.objectweb.asm.*'
     end
+    package(:sources)
     package(:javadoc)
   end
 
