@@ -50,6 +50,8 @@ define 'swung-weave' do
     project.resources.filter.using :'version' => project.version
     test.using :testng
     package(:jar)
+    package(:sources)
+    package(:javadoc)
   end
 
   doc.using :javadoc
