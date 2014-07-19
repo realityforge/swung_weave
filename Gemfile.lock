@@ -4,7 +4,7 @@ GEM
     atoulme-Antwrap (0.7.4)
       rjb (>= 1.0.3)
     builder (3.2.2)
-    buildr (1.4.18)
+    buildr (1.4.19)
       atoulme-Antwrap (~> 0.7.4)
       builder (= 3.2.2)
       bundler
@@ -46,8 +46,7 @@ GEM
     xml-simple (1.1.2)
 
 PLATFORMS
-  java
   ruby
 
 DEPENDENCIES
-  buildr (= 1.4.18)
+  buildr (= 1.4.19)
