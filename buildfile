@@ -12,6 +12,8 @@ define 'swung-weave' do
   compile.options.target = '1.7'
   compile.options.lint = 'all'
 
+  project.version = ENV['PRODUCT_VERSION'] if ENV['PRODUCT_VERSION']
+
   pom.add_apache_v2_license
   pom.add_github_project('realityforge/swung_weave')
   pom.add_developer('realityforge', 'Peter Donald')
@@ -35,11 +37,11 @@ define 'swung-weave' do
     pom.provided_dependencies.concat [:asm]
     compile.with :asm, projects('api')
     test.using :testng
-    package(:sources)
     package(:bundle).tap do |bnd|
       bnd['Export-Package'] = "org.realityforge.swung_weave.tool.*;version=#{version}"
       bnd['Private-Package'] = 'org.objectweb.asm.*'
     end
+    package(:sources)
     package(:javadoc)
   end
 
@@ -50,6 +52,8 @@ define 'swung-weave' do
     project.resources.filter.using :'version' => project.version
     test.using :testng
     package(:jar)
+    package(:sources)
+    package(:javadoc)
   end
 
   doc.using :javadoc
