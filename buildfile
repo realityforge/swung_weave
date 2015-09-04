@@ -81,7 +81,7 @@ TEXT
     package(:gem).tap do |gem|
       gem.spec do |spec|
         spec.authors        = ['Peter Donald']
-        spec.email          = ['peter@realityforge.org']
+        spec.email          = %w(peter@realityforge.org)
 
         spec.homepage       = 'http://github.com/realityforge/swung_weave'
         spec.summary        = 'Buildr extension to run the swung_weave tool'
@@ -90,11 +90,11 @@ Buildr extension to process bytecode using swung-weaver. Swung weaver is
 bytecode weaving of annotated UI classes to ensure all UI updates occur
 in the Event Dispatch Thread
 TEXT
-        spec.require_paths  = ['lib']
+        spec.require_paths  = %w(lib)
         spec.has_rdoc         = false
       end
       gem.include :from => _('lib'), :path => 'lib'
-      gem.include ['LICENSE', 'README.md', 'NOTICE']
+      gem.include %w(LICENSE README.md NOTICE)
       gem.include generated_file, :as => 'lib/buildr/swung_weave/version.rb'
       gem.prerequisites << generated_file
     end
