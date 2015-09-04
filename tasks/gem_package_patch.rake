@@ -2,6 +2,8 @@ require 'buildr/packaging/gems'
 
 module Buildr #:nodoc:
   class PackageGemTask < ArchiveTask
+    def upload
+    end
 
     def create_from(file_map)
       base_dir = "#{self.name}.pkg"
