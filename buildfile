@@ -83,6 +83,7 @@ TEXT
         spec.authors        = ['Peter Donald']
         spec.email          = %w(peter@realityforge.org)
 
+        spec.license        = 'Apache-2.0'
         spec.homepage       = 'http://github.com/realityforge/swung_weave'
         spec.summary        = 'Buildr extension to run the swung_weave tool'
         spec.description    = <<-TEXT
