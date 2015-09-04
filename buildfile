@@ -8,8 +8,9 @@ require 'buildr/custom_pom'
 desc 'SwungWeave: Bytecode weaver to simplify Swing UI code'
 define 'swung-weave' do
   project.group = 'org.realityforge.swung-weave'
-  compile.options.source = '1.7'
-  compile.options.target = '1.7'
+  # Must be Java6 to work under OSX IDEA
+  compile.options.source = '1.6'
+  compile.options.target = '1.6'
   compile.options.lint = 'all'
 
   project.version = ENV['PRODUCT_VERSION'] if ENV['PRODUCT_VERSION']
