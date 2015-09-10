@@ -14,12 +14,6 @@
     </component>
   </project-components>
 
-  <module-components>
-    <component>
-      <implementation-class>org.realityforge.swung_weave.idea.SwungWeaveModuleComponent</implementation-class>
-    </component>
-  </module-components>
-
   <actions>
   </actions>
 
